@@ -138,9 +138,6 @@ end
 getgenv().EspSettings.Names.OutlineThickness = 0
 
 
-if UESP then
-	UESP:Destroy()
-end
 local ZIndexEnabled = pcall(function()
 	local a = Drawing.new("Square")
 	a.Visible = false
