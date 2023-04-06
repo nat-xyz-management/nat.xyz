@@ -1,6 +1,5 @@
 
 local VERSION = "v1.7.2"
-if not EspSettings then
 	getgenv().EspSettings = {
 		TeamCheck = false,
 		ToggleKey = "",
@@ -133,7 +132,6 @@ if not EspSettings then
 			Length = 0
 		}
 	}
-end
 getgenv().EspSettings.Names.OutlineThickness = 0
 if UESP then
 	UESP:Destroy()
