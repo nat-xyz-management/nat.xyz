@@ -1,5 +1,7 @@
 
 local VERSION = "v1.7.2"
+
+if not EspSettings then
 	getgenv().EspSettings = {
 		TeamCheck = false,
 		ToggleKey = "",
@@ -132,7 +134,25 @@ local VERSION = "v1.7.2"
 			Length = 0
 		}
 	}
+end
+
+if EspSettings.Highlights == nil then
+	local bind = Instance.new("BindableFunction")
+	bind.OnInvoke = function()
+		setclipboard("https://pastebin.com/raw/5zw0rLH9")
+	end
+	game:GetService("StarterGui"):SetCore("SendNotification",{
+		Title = "Universal Esp",
+		Text = "Please update your script!",
+		Duration = 5,
+		Button1 = "Get Latest Script",
+		Callback = bind
+	})
+	return
+end
 getgenv().EspSettings.Names.OutlineThickness = 0
+
+
 if UESP then
 	UESP:Destroy()
 end
@@ -144,6 +164,7 @@ local ZIndexEnabled = pcall(function()
 	end)
 	a.ZIndex = 1
 end)
+
 local players = game:GetService("Players")
 local player = players.LocalPlayer
 local camera = workspace.CurrentCamera
@@ -177,9 +198,24 @@ local taskwait = task.wait
 local profbegin = debug and debug.profilebegin or function() end
 local profend = debug and debug.profileend or function() end
 local GetMouseLocation = uis.GetMouseLocation
+
 local GameId = game.GameId
 local ss, mousevis, highlights, npcs = getgenv().EspSettings, getgenv().EspSettings.MouseVisibility, getgenv().EspSettings.Highlights, getgenv().EspSettings.NPC
 local OBJECTS, VISIBLE, ID, OUTLINES = {}, true, 0, true
+--[[local bodyparts = {
+	"Head","UpperTorso","LowerTorso","LeftUpperArm","LeftLowerArm","LeftHand","RightUpperArm","RightLowerArm","RightHand","LeftUpperLeg","LeftLowerLeg","LeftFoot","RightUpperLeg","RightLowerLeg","RightFoot",
+	"Torso","Left Arm","Right Arm","Left Leg","Right Leg",
+	"Chest","Hips","LeftArm","LeftForearm","RightArm","RightForearm","LeftLeg","LeftForeleg","RightLeg","RightForeleg"
+}]]
+local gids = {
+	['arsenal'] = 111958650,
+	['pf'] = 113491250,
+	['pft'] = 115272207,
+	['pfu'] = 1256867479,
+	['bb'] = 1168263273,
+	['rp'] = 2162282815,
+	['mm2'] = 66654135
+}
 local zindex = {
 	['Boxes'] = 2,
 	['Tracers'] = 3,
@@ -211,6 +247,31 @@ local Base = {
 	"Outline",
 	"OutlineColor"
 }
+local white, black = fromRGB(255,255,255), fromRGB(0,0,0)
+local getEntry, ts, characters, teams, rp
+if (GameId == gids.pf) or (GameId == gids.pft) or (GameId == gids.pfu) then
+	local require = rawget(getrenv().shared, "require")
+	if require == nil then
+		local a = Instance.new("Message", game.CoreGui)
+		a.Text = ""
+		return
+	else
+		local _cache = rawget(debug.getupvalue(require, 1), "_cache")
+		local ReplicationInterface = rawget(rawget(_cache, "ReplicationInterface"), "module")
+		getEntry = rawget(ReplicationInterface, "getEntry")
+	end
+elseif GameId == gids.bb then
+	for _,v in next, getgc(true) do
+		if typeof(v) == "table" and rawget(v, "InitProjectile") and rawget(v, "TS") then
+			ts = rawget(v, "TS")
+			characters = ts.Characters
+			teams = ts.Teams
+		end
+	end
+elseif GameId == gids.rp then
+	rp = true
+
+end
 local From = {
 	UpperTorso = "Head",
 	LowerTorso = "UpperTorso",
@@ -260,12 +321,15 @@ local supportedparts = {
 	"WedgePart",
 	"MeshPart"
 }
+
 local PlayerObjects = {}
+
 local setidentity = setidentity or setthreadidentity or set_thread_identity or setthreadcontext or set_thread_context or (syn and syn.set_thread_identity) or nil
 function safecall(func, env, ...)
 	if not setidentity then
 		return func(...)
 	end
+
 	local suc, env = pcall(getsenv, env)
 	return coroutine.wrap(function(...)
 		setidentity(2)
@@ -276,7 +340,9 @@ function safecall(func, env, ...)
 		return func(...)
 	end)(...)
 end
+
 local oldfuncs = {}
+
 function IsAlive(plr)
 	if plr.ClassName == "Model" then
 		return true
@@ -288,12 +354,14 @@ function IsAlive(plr)
 	end
 	return false
 end
+
 function GetChar(plr)
 	if plr.ClassName == "Model" then
 		return plr
 	end
 	return plr.Character
 end
+
 function GetHealth(plr)
 	if plr.ClassName == "Model" then
 		local a = plr.Humanoid
@@ -306,18 +374,21 @@ function GetHealth(plr)
 	end
 	return {100,100}
 end
+
 function GetTeam(plr)
 	if plr.ClassName == "Model" then
 		return "NPC"
 	end
 	return plr.Team
 end
+
 function GetTeamColor(plr)
 	if plr.ClassName == "Model" then
 		return npcs.Color
 	end
 	return plr.TeamColor.Color
 end
+
 function IsFFA()
 	local t = {}
 	for _,v in next, players:GetPlayers() do
@@ -335,19 +406,151 @@ function IsFFA()
 	end
 	return #t == 1
 end
+
 do
+	if getEntry then
+		local cache = {}
+		GetChar = function(plr)
+			local obj = getEntry(plr)
+			if obj ~= nil then
+				local char = obj.Character
+				if char and char.Parent ~= nil then
+					return char
+				end
+			end
+			return nil
+		end
+		IsAlive = GetChar
+		GetHealth = function(plr)
+			local obj = getEntry(plr)
+			if obj ~= nil then
+				return {mathfloor(obj.Health), 100}
+			end
+			return nil
+		end
+	end
+	
+	if ts then
+		local settings = game:GetService("ReplicatedStorage"):WaitForChild("PlayerData"):WaitForChild(player.Name):WaitForChild("Settings")
+		local function getcolor(a)
+			local b = settings:WaitForChild(string.format("Team%sColor", a)).Value:split(",")
+			for i,v in next, b do
+				b[i] = tonumber(v) / 100
+			end
+			return fromHSV(unpack(b))
+		end
+		local teamcolors = {
+			Survivors = getcolor("Survivors"),
+			Infected = getcolor("Infected"),
+			FFA = getcolor("FFA"),
+			Beta = getcolor("Beta"),
+			Omega = getcolor("Omega")
+		}
+		
+		hookfunction(PluginManager, error)
+		GetChar = function(plr)
+			return characters:GetCharacter(plr)
+		end
+		IsAlive = GetChar
+		GetHealth = function(plr)
+			local a = GetChar(plr)
+			local hp = a:FindFirstChild("Health")
+			if hp then
+				return {mathfloor(hp.Value), mathfloor(hp.MaxHealth.Value)}
+			end
+			return {100, 100}
+		end
+		GetTeam = function(plr)
+			return teams:GetPlayerTeam(plr, plr)
+		end
+		GetTeamColor = function(plr)
+			local team = GetTeam(plr)
+			return (team and teamcolors[team]) or white
+		end
+	end
+
+	if GameId == gids.arsenal then
+		GetHealth = function(plr)
+			local a = plr.NRPBS
+			return {mathfloor(a.Health.Value), mathfloor(a.MaxHealth.Value)}
+		end
+		local ffa = game:GetService("ReplicatedStorage"):WaitForChild("wkspc"):WaitForChild("FFA")
+		IsFFA = function()
+			return ffa.Value
+		end
+	end
+
+	if rp then
+		local mapfolder = workspace:WaitForChild("MapFolder")
+		local playerfolder = mapfolder:WaitForChild("Players")
+		local gamestats = mapfolder:WaitForChild("GameStats")
+		GetChar = function(plr)
+			return playerfolder:FindFirstChild(plr.Name)
+		end
+		IsAlive = GetChar
+		GetHealth = function(plr)
+			local char = GetChar(plr) if not char then return {0, 100} end
+			local humanoid = char:FindFirstChildOfClass("Humanoid") if not humanoid then return {0, 100} end
+			return {mathfloor(humanoid.Health), mathfloor(humanoid.MaxHealth)}
+		end
+		GetTeam = function(plr)
+			local char = GetChar(plr) if not char then return "" end
+			local team = char:FindFirstChild("Team") if not team then return "" end
+			return team.Value
+		end
+		GetTeamColor = function(plr)
+			local char = GetChar(plr) if not char then return white end
+			local outline = char:FindFirstChild("OutlineESP") if not outline then return white end
+			return outline.OutlineColor
+		end
+		IsFFA = function()
+			return gamestats.GameMode.Value == "Deathmatch"
+		end
+	end
+
+	if GameId == gids.mm2 then
+		local sheriff = Color3.new(0, 0, 1)
+		local murderer = Color3.new(1, 0, 0)
+		local innocent = Color3.new(0, 1, 0)
+		GetTeam = function(plr)
+			local backpack = plr.Backpack
+			local char = GetChar(plr)
+			if (backpack and backpack:FindFirstChild("Gun")) or (char and char:FindFirstChild("Gun")) then
+				return "Sheriff"
+			elseif (backpack and backpack:FindFirstChild("Knife")) or (char and char:FindFirstChild("Knife")) then
+				return "Murderer"
+			end
+			return "Innocent"
+		end
+		GetTeamColor = function(plr)
+			local backpack = plr.Backpack
+			local char = GetChar(plr)
+			if (backpack and backpack:FindFirstChild("Gun")) or (char and char:FindFirstChild("Gun")) then
+				return sheriff
+			elseif (backpack and backpack:FindFirstChild("Knife")) or (char and char:FindFirstChild("Knife")) then
+				return murderer
+			end
+			return innocent
+		end
+	end
+end
+
 oldfuncs.alive = IsAlive
 oldfuncs.character = GetChar
 oldfuncs.health = GetHealth
 oldfuncs.team = GetTeam
 oldfuncs.teamcolor = GetTeamColor
 oldfuncs.ffa = IsFFA
+
+----
+
 function ternary(condition, truevalue, falsevalue)
 	if condition then
 		return truevalue
 	end
 	return falsevalue
 end
+
 function ApplyZIndex(obj, name, ontop)
 	if ZIndexEnabled then
 		local idx = (ontop and zindex_ontop[name]) or zindex[name]
@@ -414,6 +617,7 @@ local Object = {
 			RightForeleg = Drawingnew("Line"),
 			RightFoot = Drawingnew("Line")
 		}) or {
+
 			UpperTorsoOutline = Drawingnew("Line"),
 			LowerTorsoOutline = Drawingnew("Line"),
 			LeftUpperArmOutline = Drawingnew("Line"),
@@ -443,6 +647,7 @@ local Object = {
 			RightUpperLeg = Drawingnew("Line"),
 			RightLowerLeg = Drawingnew("Line"),
 			RightFoot = Drawingnew("Line"),
+
 			TorsoOutline = Drawingnew("Line"),
 			["Left ArmOutline"] = Drawingnew("Line"),
 			["Right ArmOutline"] = Drawingnew("Line"),
@@ -609,6 +814,7 @@ function PartSetProp(self, prop, value)
 end
 function NewPartObject(objs, type, part, options)
 	ID += 1
+
 	local t = {
 		Object = objs,
 		Type = type,
@@ -628,10 +834,12 @@ function NewPartObject(objs, type, part, options)
 		end
 		t:SetPart(parent:FindFirstChild(part.Name))
 	end)
+
 	OBJECTS[ID] = t
 
 	return t
 end
+
 local ss = getgenv().EspSettings
 local origins = {}
 local mousepos = Vector2.zero
@@ -645,21 +853,25 @@ local maxdist = ss.MaximumDistance
 local facecamera = ss.FaceCamera
 local alignpoints = ss.AlignPoints
 local refreshrate = ss.RefreshRate / 1000
+
 local mv_enabled = mousevis.Enabled
 local mv_selected = mousevis.Selected
 local mv_transparency = mousevis.Transparency
 local mv_method = mousevis.Method and lower(mousevis.Method) or nil
 local mv_radius = mousevis.Radius
 local mv_hoverradius = mousevis.HoverRadius or 10
+
 local hl_enabled = highlights.Enabled
 local hl_players = highlights.Players
 local hl_color = highlights.Color 
 local hl_transparency = highlights.Transparency
 local hl_ontop = highlights.AlwaysOnTop
+
 local npc_overrides = npcs.Overrides
 local npc_color = npcs.Color
 local npc_transparency = npcs.Transparency
 local npc_rainbow = npcs.Rainbow
+
 local Boxes = ss.Boxes
 local Tracers = ss.Tracers
 local Names = ss.Names
@@ -721,6 +933,7 @@ function UpdateObjects(self)
 	local team, teamcolor
 	local health, maxhealth, mag, overlapping, render
 	local char = plr and GetChar(plr)
+
 	local objs = self.Objects
 	local box = objs.Box.Object
 	local tracer = objs.Tracer.Object
@@ -729,6 +942,7 @@ function UpdateObjects(self)
 	local bar = objs.HealthBar.Object
 	local dot = objs.HeadDot.Object
 	local ltracer = objs.LookTracer.Object
+
 	if VISIBLE and char then
 		local hp = GetHealth(plr)
 		health, maxhealth = hp[1], hp[2]
@@ -737,6 +951,7 @@ function UpdateObjects(self)
 		mag = (ccf - cf.Position).Magnitude
 		render = (ffa or (not teamcheck or (not ffa and teamcheck and team ~= myteam))) and mag <= maxdist
 		mid, inViewport = WorldToViewportPoint(camera, cf.Position)
+
 		local BOXES = Boxes.Enabled
 		local TRACERS = Tracers.Enabled
 		local NAMES = Names.Enabled
@@ -744,6 +959,7 @@ function UpdateObjects(self)
 		local HEALTHBARS = HealthBars.Enabled
 		local HEADDOTS = HeadDots.Enabled
 		local LOOKTRACERS = LookTracers.Enabled
+
 		SetProp(box, "Visible", render and inViewport and BOXES)
 		SetProp(tracer, "Visible", render and inViewport and TRACERS)
 		SetProp(name, "Visible", render and inViewport and NAMES)
@@ -751,6 +967,7 @@ function UpdateObjects(self)
 		SetProp(bar, "Visible", render and inViewport and HEALTHBARS)
 		SetProp(dot, "Visible", render and inViewport and HEADDOTS)
 		SetProp(ltracer, "Visible", render and inViewport and LOOKTRACERS)
+
 		if render and inViewport then
 			do
 				if facecamera then
@@ -758,15 +975,18 @@ function UpdateObjects(self)
 				end
 				size /= 2
 				local x, y = size.X, size.Y
+				--mid, inViewport = WorldToViewportPoint(camera, cf.Position)
 				tl = WorldToViewportPoint(camera, (cf * CFramenew(-x,  y, 0)).Position)
 				tr = WorldToViewportPoint(camera, (cf * CFramenew( x,  y, 0)).Position)
 				bl = WorldToViewportPoint(camera, (cf * CFramenew(-x, -y, 0)).Position)
 				br = WorldToViewportPoint(camera, (cf * CFramenew( x, -y, 0)).Position)
+	
 				tlx, tly, tlz = tl.X, tl.Y, tl.Z
 				trx, try = tr.X, tr.Y
 				blx, bly = bl.X, bl.Y
 				brx, bry = br.X, br.Y
 				z = mathclamp(1000 / tlz, 8, 12)
+	
 				if facecamera and alignpoints then
 					if tly < try then
 						tly += mathabs(tly - try) / 2
@@ -774,6 +994,7 @@ function UpdateObjects(self)
 						tly += mathabs(try - tly) / 2
 					end
 					try = tly
+	
 					if bly < bry then
 						bly += mathabs(bly - bry) / 2
 					else
@@ -781,6 +1002,11 @@ function UpdateObjects(self)
 					end
 					bry = bly
 				end
+	
+				if ts and char:FindFirstChild("Body") then
+					char = char.Body
+				end
+	
 				if mv_enabled then
 					local method = mv_method
 					if method == "radius" or not method then
@@ -790,13 +1016,16 @@ function UpdateObjects(self)
 						tableinsert(mags, (mousepos - Vector2new(trx, try)).Magnitude)
 						tableinsert(mags, (mousepos - Vector2new(blx, bly)).Magnitude)
 						tableinsert(mags, (mousepos - Vector2new(brx, bry)).Magnitude)
+						
 						tablesort(mags, function(a,b)
 							return a < b
 						end)
+	
 						overlapping = mags[1] <= mv_radius
 					elseif method == "hover" then
 						local x_min = mathmin(tlx, trx, blx, brx) - mv_hoverradius
 						local x_max = mathmax(tlx, trx, blx, brx) + mv_hoverradius
+	
 						local y_min_offset = 0
 						local y_max_offset = 0
 						if Names.Enabled then
@@ -810,14 +1039,17 @@ function UpdateObjects(self)
 						end
 						local y_min = mathmin(tly, try, bly, bry) - y_min_offset - mv_hoverradius
 						local y_max = mathmax(tly, try, bly, bry) + y_max_offset + mv_hoverradius
-
+	
 						local mousex = mousepos.X
 						local mousey = mousepos.Y
+	
 						overlapping = mousex > x_min and mousex < x_max and mousey > y_min and mousey < y_max
 					end
 				end
 			end
+
 			local highlight = hl_enabled and tablefind(hl_players, plr.Name)
+
 			if BOXES then
 				local type = "Boxes"
 				local certified_npc = isnpc and npc_overrides[type]
@@ -833,12 +1065,14 @@ function UpdateObjects(self)
 				ApplyZIndex(box, type, highlight and hl_ontop)
 				SetProp(box, "Color", color)
 				SetProp(box, "Transparency", transparency)
+
 				local box, out = box.Box, box.Outline
 				box.Thickness = Boxes.Thickness
 				box.PointA = Vector2new(trx, try)
 				box.PointB = Vector2new(tlx, tly)
 				box.PointC = Vector2new(blx, bly)
 				box.PointD = Vector2new(brx, bry)
+
 				if OUTLINES then
 					out.Visible = Boxes.Outline and box.Visible
 					if Boxes.Outline then
@@ -851,6 +1085,7 @@ function UpdateObjects(self)
 					end
 				end
 			end
+	
 			if TRACERS then
 				local type = "Tracers"
 				local certified_npc = isnpc and npc_overrides[type]
@@ -879,6 +1114,7 @@ function UpdateObjects(self)
 					to = Vector2new(blx + (brx - blx) / 2, bly + (bry - bly) / 2)
 					tracer.To = to
 				end
+
 				if OUTLINES then
 					out.Visible = outline and tracer.Visible
 					if outline then
@@ -889,6 +1125,7 @@ function UpdateObjects(self)
 					end
 				end
 			end
+	
 			if NAMES then
 				local type = "Names"
 				local certified_npc = isnpc and npc_overrides[type]
@@ -917,10 +1154,12 @@ function UpdateObjects(self)
 				if ss.HealthBars.Enabled then
 					data.Position = Vector2new(data.Position.X, data.Position.Y + z)
 				end
+
 				if isnpc then
 					name.Text = "[NPC] "
 				end
 				name.Text = (Names.UseDisplayName and plr.DisplayName) or plr.Name
+
 				data.Text = ""
 				if Names.ShowDistance then
 					data.Text = "[ "..mathfloor(mag)..Names.DistanceDataType.." ]"
@@ -934,6 +1173,7 @@ function UpdateObjects(self)
 					end
 				end
 			end
+	
 			if SKELETONS then
 				local type = "Skeletons"
 				local certified_npc = isnpc and npc_overrides[type]
@@ -983,6 +1223,7 @@ function UpdateObjects(self)
 					end
 				end
 			end
+	
 			if HEALTHBARS then
 				local type = "HealthBars"
 				local certified_npc = isnpc and npc_overrides[type]
@@ -1048,6 +1289,7 @@ function UpdateObjects(self)
 					end
 				end
 			end
+	
 			if HEADDOTS then
 				local type = "HeadDots"
 				local certified_npc = isnpc and npc_overrides[type]
@@ -1568,6 +1810,16 @@ function esp:Remove(a)
 		end
 	end
 end
+--[[function esp:DisableOutlines()
+	OUTLINES = false
+	for _,v in next, OBJECTS do
+		for i2,v2 in next, v.Object do
+			if i2:find("Outline") then
+				v2:Remove()
+			end
+		end
+	end
+end]]
 function esp:SetFunction(a,f)
 	assert(typeof(a) == "string",("Universal Esp: bad argument to #1 'SetFunction' (string expected, got %s)"):format(typeof(a)))
 	assert(typeof(f) == "function",("Universal Esp: bad argument to #2 'SetFunction' (function expected, got %s)"):format(typeof(f)))
@@ -1615,6 +1867,7 @@ function esp:Destroy()
 		v:Destroy()
 	end
 	for _,v in next, OBJECTS do
+		--v:Remove()
 	end
 	destroyed = true
 end
