@@ -1,1857 +1,612 @@
 
-local VERSION = "v1.7.2"
+local espLibrary = {
+instances = {},
+espCache = {},
+chamsCache = {},
+objectCache = {},
+conns = {},
+whitelist = {},
+blacklist = {},
+options = {
+enabled = false,
+minScaleFactorX = 1,
+maxScaleFactorX = 10,
+minScaleFactorY = 1,
+maxScaleFactorY = 10,
+scaleFactorX = 5,
+scaleFactorY = 6,
+boundingBox = false,
+boundingBoxDescending = true,
+excludedPartNames = {},
+font = 2,
+fontSize = 13,
+limitDistance = false,
+maxDistance = 0,
+visibleOnly = false,
+teamCheck = false,
+teamColor = false,
+fillColor = nil,
+whitelistColor = Color3.new(1, 0, 0),
+outOfViewArrows = false,
+outOfViewArrowsFilled = false,
+outOfViewArrowsSize = 0,
+outOfViewArrowsRadius = 0,
+outOfViewArrowsColor = Color3.new(1, 1, 1),
+outOfViewArrowsTransparency = 0,
+outOfViewArrowsOutline = false,
+outOfViewArrowsOutlineFilled = false,
+outOfViewArrowsOutlineColor = Color3.new(1, 1, 1),
+outOfViewArrowsOutlineTransparency = 1,
+names = false,
+nameTransparency = 0,
+nameColor = Color3.new(1, 1, 1),
+boxes = true,
+boxesTransparency = 0,
+boxesColor = Color3.new(1, 0, 0),
+boxFill = false,
+boxFillTransparency = 0,
+boxFillColor = Color3.new(1, 0, 0),
+healthBars = true,
+healthBarsSize = 0,
+healthBarsTransparency = 0,
+healthBarsColor = Color3.new(0, 1, 0),
+healthText = true,
+healthTextTransparency = 0,
+healthTextSuffix = "%",
+healthTextColor = Color3.new(1, 1, 1),
+distance = true,
+distanceTransparency = 0,
+distanceSuffix = " Studs",
+distanceColor = Color3.new(1, 1, 1),
+tracers = false,
+tracerTransparency = 0,
+tracerColor = Color3.new(1, 1, 1),
+tracerOrigin = "Bottom",
+chams = false,
+chamsFillColor = Color3.new(1, 0, 0),
+chamsFillTransparency = 0,
+chamsOutlineColor = Color3.new(),
+chamsOutlineTransparency = 0
+},
+};
+espLibrary.__index = espLibrary;
 
-if not EspSettings then
-	getgenv().EspSettings = {
-		TeamCheck = false,
-		ToggleKey = "",
-		RefreshRate = 0,
-		MaximumDistance = 0,
-		FaceCamera = false,
-		AlignPoints = false,
-		MouseVisibility = {
-			Enabled = false,
-			Radius = 0,
-			Transparency = 0,
-			Method = "Hover",
-			HoverRadius = 50,
-			Selected = {
-				Boxes = false,
-				Tracers = false,
-				Names = false,
-				Skeletons = false,
-				HealthBars = false,
-				HeadDots = false,
-				LookTracers = true
-			}
-		},
-		Highlights = {
-			Enabled = false,
-			Players = {},
-			Transparency = 1,
-			Color = Color3.fromRGB(255, 150, 0),
-			AlwaysOnTop = false
-		},
-		NPC = {
-			Color = Color3.fromRGB(150,150,150),
-			Transparency = 1,
-			RainbowColor = false,
-			Overrides = {
-				Boxes = true,
-				Tracers = true,
-				Names = true,
-				Skeletons = true,
-				HealthBars = true,
-				HeadDots = true,
-				LookTracers = true
-			}
-		},
-		Boxes = {
-			Enabled = true,
-			Transparency = 1,
-			Color = Color3.fromRGB(255,255,255),
-			UseTeamColor = true,
-			RainbowColor = false,
-			Outline = true,
-			OutlineColor = Color3.fromRGB(0,0,0),
-			OutlineThickness = 0,
-			Thickness = 0
-		},
-		Tracers = {
-			Enabled = false,
-			Transparency = 0,
-			Color = Color3.fromRGB(255,255,255),
-			UseTeamColor = false,
-			RainbowColor = false,
-			Outline = false,
-			OutlineColor = Color3.fromRGB(0,0,0),
-			OutlineThickness = 0,
-			Origin = "Top",
-			Thickness = 0
-		},
-		Names = {
-			Enabled = false,
-			Transparency = 0,
-			Color = Color3.fromRGB(255,255,255),
-			UseTeamColor = false,
-			RainbowColor = false,
-			Outline = false,
-			OutlineColor = Color3.fromRGB(0,0,0),
-			Font = Drawing.Fonts.UI,
-			Size = 0,
-			ShowDistance = false,
-			ShowHealth = false,
-			UseDisplayName = false,
-			DistanceDataType = "m",
-			HealthDataType = "Percentage"
-		},
-		Skeletons = {
-			Enabled = false,
-			Transparency = 1,
-			Color = Color3.fromRGB(255,255,255),
-			UseTeamColor = false,
-			RainbowColor = false,
-			Outline = false,
-			OutlineColor = Color3.fromRGB(0,0,0),
-			OutlineThickness = 1,
-			Thickness = 1
-		},
-		HealthBars = {
-			Enabled = false,
-			Transparency = 1,
-			Color = Color3.fromRGB(0,255,0),
-			UseTeamColor = false,
-			RainbowColor = false,
-			Outline = false,
-			OutlineColor = Color3.fromRGB(0,0,0),
-			OutlineThickness = 0,
-			Origin = "None",
-			OutlineBarOnly = false
-		},
-		HeadDots = {
-			Enabled = false,
-			Transparency = 1,
-			Color = Color3.fromRGB(255,255,255),
-			UseTeamColor = false,
-			RainbowColor = false,
-			Outline = false,
-			OutlineColor = Color3.fromRGB(0,0,0),
-			OutlineThickness = 0,
-			Thickness = 0,
-			Filled = false,
-			Scale = 0
-		},
-		LookTracers = {
-			Enabled = false,
-			Transparency = 0,
-			Color = Color3.fromRGB(255,255,255),
-			UseTeamColor = false,
-			RainbowColor = false,
-			Outline = false,
-			OutlineColor = Color3.fromRGB(0,0,0),
-			OutlineThickness = 0,
-			Thickness = 0,
-			Length = 0
-		}
-	}
-end
-getgenv().EspSettings.Names.OutlineThickness = 0
+local getService = game.GetService;
+local instanceNew = Instance.new;
+local drawingNew = Drawing.new;
+local vector2New = Vector2.new;
+local vector3New = Vector3.new;
+local cframeNew = CFrame.new;
+local color3New = Color3.new;
+local raycastParamsNew = RaycastParams.new;
+local abs = math.abs;
+local tan = math.tan;
+local rad = math.rad;
+local clamp = math.clamp;
+local floor = math.floor;
+local find = table.find;
+local insert = table.insert;
+local findFirstChild = game.FindFirstChild;
+local getChildren = game.GetChildren;
+local getDescendants = game.GetDescendants;
+local isA = workspace.IsA;
+local raycast = workspace.Raycast;
+local emptyCFrame = cframeNew();
+local pointToObjectSpace = emptyCFrame.PointToObjectSpace;
+local getComponents = emptyCFrame.GetComponents;
+local cross = vector3New().Cross;
+local inf = 1 / 0;
 
+local workspace = getService(game, "Workspace");
+local runService = getService(game, "RunService");
+local players = getService(game, "Players");
+local coreGui = getService(game, "CoreGui");
+local userInputService = getService(game, "UserInputService");
 
-local ZIndexEnabled = pcall(function()
-	local a = Drawing.new("Square")
-	a.Visible = false
-	task.delay(0.1, function()
-		a:Remove()
-	end)
-	a.ZIndex = 1
-end)
+local currentCamera = workspace.CurrentCamera;
+local localPlayer = players.LocalPlayer;
+local screenGui = instanceNew("ScreenGui", coreGui);
+local lastFov, lastScale;
 
-local players = game:GetService("Players")
-local player = players.LocalPlayer
-local camera = workspace.CurrentCamera
-local uis = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
+local wtvp = currentCamera.WorldToViewportPoint;
 
-local Drawingnew = Drawing.new
-local Fonts = Drawing.Fonts
-local tableinsert = table.insert
-local tablesort = table.sort
-local tablefind = table.find
-local WorldToViewportPoint = camera.WorldToViewportPoint
-local CFramenew = CFrame.new
-local Vector2new = Vector2.new 
-local fromRGB = Color3.fromRGB
-local fromHSV = Color3.fromHSV
-local mathfloor = math.floor
-local mathclamp = math.clamp
-local mathhuge = math.huge
-local mathabs = math.abs
-local mathmin = math.min
-local mathmax = math.max
-local lower = string.lower
-local find = string.find
-local osclock = os.clock
-local next = next
-local tick = tick
-local typeof = typeof
-local taskspawn = task.spawn
-local taskwait = task.wait
-local profbegin = debug and debug.profilebegin or function() end
-local profend = debug and debug.profileend or function() end
-local GetMouseLocation = uis.GetMouseLocation
-
-local GameId = game.GameId
-local ss, mousevis, highlights, npcs = getgenv().EspSettings, getgenv().EspSettings.MouseVisibility, getgenv().EspSettings.Highlights, getgenv().EspSettings.NPC
-local OBJECTS, VISIBLE, ID, OUTLINES = {}, true, 0, true
---[[local bodyparts = {
-	"Head","UpperTorso","LowerTorso","LeftUpperArm","LeftLowerArm","LeftHand","RightUpperArm","RightLowerArm","RightHand","LeftUpperLeg","LeftLowerLeg","LeftFoot","RightUpperLeg","RightLowerLeg","RightFoot",
-	"Torso","Left Arm","Right Arm","Left Leg","Right Leg",
-	"Chest","Hips","LeftArm","LeftForearm","RightArm","RightForearm","LeftLeg","LeftForeleg","RightLeg","RightForeleg"
-}]]
-local gids = {
-	['arsenal'] = 111958650,
-	['pf'] = 113491250,
-	['pft'] = 115272207,
-	['pfu'] = 1256867479,
-	['bb'] = 1168263273,
-	['rp'] = 2162282815,
-	['mm2'] = 66654135
-}
-local zindex = {
-	['Boxes'] = 2,
-	['Tracers'] = 3,
-	['Names'] = 6,
-	['Skeletons'] = 2,
-	['HealthBars'] = 4,
-	['HeadDots'] = 3,
-	['LookTracers'] = 3,
-	['Labels'] = 5,
-	['Chams'] = 0
-}
-local zindex_ontop = {
-	['Boxes'] = 12,
-	['Tracers'] = 13,
-	['Names'] = 16,
-	['Skeletons'] = 12,
-	['HealthBars'] = 14,
-	['HeadDots'] = 13,
-	['LookTracers'] = 13,
-	['Labels'] = 15,
-	['Chams'] = 10
-}
-local Base = {
-	"Enabled",
-	"Transparency",
-	"Color",
-	"UseTeamColor",
-	"RainbowColor",
-	"Outline",
-	"OutlineColor"
-}
-local white, black = fromRGB(255,255,255), fromRGB(0,0,0)
-local getEntry, ts, characters, teams, rp
-if (GameId == gids.pf) or (GameId == gids.pft) or (GameId == gids.pfu) then
-	local require = rawget(getrenv().shared, "require")
-	if require == nil then
-		local a = Instance.new("Message", game.CoreGui)
-		a.Text = ""
-		return
-	else
-		local _cache = rawget(debug.getupvalue(require, 1), "_cache")
-		local ReplicationInterface = rawget(rawget(_cache, "ReplicationInterface"), "module")
-		getEntry = rawget(ReplicationInterface, "getEntry")
-	end
-elseif GameId == gids.bb then
-	for _,v in next, getgc(true) do
-		if typeof(v) == "table" and rawget(v, "InitProjectile") and rawget(v, "TS") then
-			ts = rawget(v, "TS")
-			characters = ts.Characters
-			teams = ts.Teams
-		end
-	end
-elseif GameId == gids.rp then
-	rp = true
-
-end
-local From = {
-	UpperTorso = "Head",
-	LowerTorso = "UpperTorso",
-	LeftUpperArm = "UpperTorso",
-	RightUpperArm = "UpperTorso",
-	LeftLowerArm = "LeftUpperArm",
-	RightLowerArm = "RightUpperArm",
-	LeftHand = "LeftLowerArm",
-	RightHand = "RightLowerArm",
-	LeftUpperLeg = "LowerTorso",
-	RightUpperLeg = "LowerTorso",
-	LeftLowerLeg = "LeftUpperLeg",
-	RightLowerLeg = "RightUpperLeg",
-	LeftFoot = "LeftLowerLeg",
-	RightFoot = "RightLowerLeg",
-
-	Torso = "Head",
-	['Left Arm'] = "Torso",
-	['Right Arm'] = "Torso",
-	['Left Leg'] = "Torso",
-	['Right Leg'] = "Torso",
-
-	Chest = "Head",
-	Hips = "Chest",
-	LeftArm = "Chest",
-	LeftForearm = "LeftArm",
-	RightArm = "Chest",
-	RightForearm = "RightArm",
-	LeftLeg = "Hips",
-	LeftForeleg = "LeftLeg",
-	RightLeg = "Hips",
-	RightForeleg = "RightLeg"
-}
-if ts then
-	From.LeftHand = "LeftForearm"
-	From.RightHand = "RightForearm"
-	From.LeftFoot = "LeftForeleg"
-	From.RightFoot = "RightForeleg"
-end
-local supportedparts = {
-	"CornerWedgePart",
-	"Model",
-	"NegateOperation",
-	"Part",
-	"TrussPart",
-	"UnionOperation",
-	"WedgePart",
-	"MeshPart"
-}
-
-local PlayerObjects = {}
-
-local setidentity = setidentity or setthreadidentity or set_thread_identity or setthreadcontext or set_thread_context or (syn and syn.set_thread_identity) or nil
-function safecall(func, env, ...)
-	if not setidentity then
-		return func(...)
-	end
-
-	local suc, env = pcall(getsenv, env)
-	return coroutine.wrap(function(...)
-		setidentity(2)
-		if suc then
-			setfenv(0, env)
-			setfenv(1, env)
-		end
-		return func(...)
-	end)(...)
+local function isDrawing(type)
+return type == "Square" or type == "Text" or type == "Triangle" or type == "Image" or type == "Line" or type == "Circle";
 end
 
-local oldfuncs = {}
+local function create(type, properties)
+local drawing = isDrawing(type);
+local object = drawing and drawingNew(type) or instanceNew(type);
 
-function IsAlive(plr)
-	if plr.ClassName == "Model" then
-		return true
-	end
-
-	local humanoid = plr.Character and plr.Character:FindFirstChild("Humanoid") or nil
-	if humanoid and humanoid.Health > 0 then
-		return true
-	end
-	return false
+if (properties) then
+for i,v in next, properties do
+object[i] = v;
+end
 end
 
-function GetChar(plr)
-	if plr.ClassName == "Model" then
-		return plr
-	end
-	return plr.Character
+if (not drawing) then
+insert(espLibrary.instances, object);
 end
 
-function GetHealth(plr)
-	if plr.ClassName == "Model" then
-		local a = plr.Humanoid
-		return {mathfloor(a.Health), mathfloor(a.MaxHealth)}
-	end
-
-	local a = plr.Character and plr.Character:FindFirstChild("Humanoid") or nil
-	if a then
-		return {mathfloor(a.Health), mathfloor(a.MaxHealth)}
-	end
-	return {100,100}
+return object;
 end
 
-function GetTeam(plr)
-	if plr.ClassName == "Model" then
-		return "NPC"
-	end
-	return plr.Team
+local function worldToViewportPoint(position)
+local screenPosition, onScreen = wtvp(currentCamera, position);
+return vector2New(screenPosition.X, screenPosition.Y), onScreen, screenPosition.Z;
 end
 
-function GetTeamColor(plr)
-	if plr.ClassName == "Model" then
-		return npcs.Color
-	end
-	return plr.TeamColor.Color
+local function round(number)
+return typeof(number) == "Vector2" and vector2New(round(number.X), round(number.Y)) or floor(number);
 end
 
-function IsFFA()
-	local t = {}
-	for _,v in next, players:GetPlayers() do
-		local team = GetTeam(v)
-		if team == nil then
-			return true
-		end
-
-		team = team.Name or team
-		if t[team] then
-			return true
-		else
-			tableinsert(t, team)
-		end
-	end
-	return #t == 1
+function espLibrary.getTeam(player)
+local team = player.Team;
+return team, player.TeamColor.Color;
 end
 
-do
-	if getEntry then
-		local cache = {}
-		GetChar = function(plr)
-			local obj = getEntry(plr)
-			if obj ~= nil then
-				local char = obj.Character
-				if char and char.Parent ~= nil then
-					return char
-				end
-			end
-			return nil
-		end
-		IsAlive = GetChar
-		GetHealth = function(plr)
-			local obj = getEntry(plr)
-			if obj ~= nil then
-				return {mathfloor(obj.Health), 100}
-			end
-			return nil
-		end
-	end
-	
-	if ts then
-		local settings = game:GetService("ReplicatedStorage"):WaitForChild("PlayerData"):WaitForChild(player.Name):WaitForChild("Settings")
-		local function getcolor(a)
-			local b = settings:WaitForChild(string.format("Team%sColor", a)).Value:split(",")
-			for i,v in next, b do
-				b[i] = tonumber(v) / 100
-			end
-			return fromHSV(unpack(b))
-		end
-		local teamcolors = {
-			Survivors = getcolor("Survivors"),
-			Infected = getcolor("Infected"),
-			FFA = getcolor("FFA"),
-			Beta = getcolor("Beta"),
-			Omega = getcolor("Omega")
-		}
-		
-		hookfunction(PluginManager, error)
-		GetChar = function(plr)
-			return characters:GetCharacter(plr)
-		end
-		IsAlive = GetChar
-		GetHealth = function(plr)
-			local a = GetChar(plr)
-			local hp = a:FindFirstChild("Health")
-			if hp then
-				return {mathfloor(hp.Value), mathfloor(hp.MaxHealth.Value)}
-			end
-			return {100, 100}
-		end
-		GetTeam = function(plr)
-			return teams:GetPlayerTeam(plr, plr)
-		end
-		GetTeamColor = function(plr)
-			local team = GetTeam(plr)
-			return (team and teamcolors[team]) or white
-		end
-	end
-
-	if GameId == gids.arsenal then
-		GetHealth = function(plr)
-			local a = plr.NRPBS
-			return {mathfloor(a.Health.Value), mathfloor(a.MaxHealth.Value)}
-		end
-		local ffa = game:GetService("ReplicatedStorage"):WaitForChild("wkspc"):WaitForChild("FFA")
-		IsFFA = function()
-			return ffa.Value
-		end
-	end
-
-	if rp then
-		local mapfolder = workspace:WaitForChild("MapFolder")
-		local playerfolder = mapfolder:WaitForChild("Players")
-		local gamestats = mapfolder:WaitForChild("GameStats")
-		GetChar = function(plr)
-			return playerfolder:FindFirstChild(plr.Name)
-		end
-		IsAlive = GetChar
-		GetHealth = function(plr)
-			local char = GetChar(plr) if not char then return {0, 100} end
-			local humanoid = char:FindFirstChildOfClass("Humanoid") if not humanoid then return {0, 100} end
-			return {mathfloor(humanoid.Health), mathfloor(humanoid.MaxHealth)}
-		end
-		GetTeam = function(plr)
-			local char = GetChar(plr) if not char then return "" end
-			local team = char:FindFirstChild("Team") if not team then return "" end
-			return team.Value
-		end
-		GetTeamColor = function(plr)
-			local char = GetChar(plr) if not char then return white end
-			local outline = char:FindFirstChild("OutlineESP") if not outline then return white end
-			return outline.OutlineColor
-		end
-		IsFFA = function()
-			return gamestats.GameMode.Value == "Deathmatch"
-		end
-	end
-
-	if GameId == gids.mm2 then
-		local sheriff = Color3.new(0, 0, 1)
-		local murderer = Color3.new(1, 0, 0)
-		local innocent = Color3.new(0, 1, 0)
-		GetTeam = function(plr)
-			local backpack = plr.Backpack
-			local char = GetChar(plr)
-			if (backpack and backpack:FindFirstChild("Gun")) or (char and char:FindFirstChild("Gun")) then
-				return "Sheriff"
-			elseif (backpack and backpack:FindFirstChild("Knife")) or (char and char:FindFirstChild("Knife")) then
-				return "Murderer"
-			end
-			return "Innocent"
-		end
-		GetTeamColor = function(plr)
-			local backpack = plr.Backpack
-			local char = GetChar(plr)
-			if (backpack and backpack:FindFirstChild("Gun")) or (char and char:FindFirstChild("Gun")) then
-				return sheriff
-			elseif (backpack and backpack:FindFirstChild("Knife")) or (char and char:FindFirstChild("Knife")) then
-				return murderer
-			end
-			return innocent
-		end
-	end
+function espLibrary.getCharacter(player)
+local character = player.Character;
+return character, character and findFirstChild(character, "HumanoidRootPart");
 end
 
-oldfuncs.alive = IsAlive
-oldfuncs.character = GetChar
-oldfuncs.health = GetHealth
-oldfuncs.team = GetTeam
-oldfuncs.teamcolor = GetTeamColor
-oldfuncs.ffa = IsFFA
+function espLibrary.getBoundingBox(character, torso)
+if (espLibrary.options.boundingBox) then
+local minX, minY, minZ = inf, inf, inf;
+local maxX, maxY, maxZ = -inf, -inf, -inf;
 
-----
+for _, part in next, espLibrary.options.boundingBoxDescending and getDescendants(character) or getChildren(character) do
+if (isA(part, "BasePart") and not find(espLibrary.options.excludedPartNames, part.Name)) then
+local size = part.Size;
+local sizeX, sizeY, sizeZ = size.X, size.Y, size.Z;
 
-function ternary(condition, truevalue, falsevalue)
-	if condition then
-		return truevalue
-	end
-	return falsevalue
+local x, y, z, r00, r01, r02, r10, r11, r12, r20, r21, r22 = getComponents(part.CFrame);
+
+local wiseX = 0.5 * (abs(r00) * sizeX + abs(r01) * sizeY + abs(r02) * sizeZ);
+local wiseY = 0.5 * (abs(r10) * sizeX + abs(r11) * sizeY + abs(r12) * sizeZ);
+local wiseZ = 0.5 * (abs(r20) * sizeX + abs(r21) * sizeY + abs(r22) * sizeZ);
+
+minX = minX > x - wiseX and x - wiseX or minX;
+minY = minY > y - wiseY and y - wiseY or minY;
+minZ = minZ > z - wiseZ and z - wiseZ or minZ;
+
+maxX = maxX < x + wiseX and x + wiseX or maxX;
+maxY = maxY < y + wiseY and y + wiseY or maxY;
+maxZ = maxZ < z + wiseZ and z + wiseZ or maxZ;
+end
 end
 
-function ApplyZIndex(obj, name, ontop)
-	if ZIndexEnabled then
-		local idx = (ontop and zindex_ontop[name]) or zindex[name]
-		for i,v in next, obj do
-			v.ZIndex = (find(i, "Outline") and idx - 1) or idx
-		end
-	end
+local oMin, oMax = vector3New(minX, minY, minZ), vector3New(maxX, maxY, maxZ);
+return (oMax + oMin) * 0.5, oMax - oMin;
+else
+return torso.Position, vector2New(espLibrary.options.scaleFactorX, espLibrary.options.scaleFactorY);
 end
-function SetProp(obj, prop, value, outline)
-	for i,v in next, obj do
-		if (OUTLINES and outline and find(i, "Outline")) or (not outline and OUTLINES) then
-			v[prop] = value
-		end
-	end
-end
-local Object = {
-	Boxes = function()
-		return {
-			Outline = Drawingnew("Quad"),
-			Box = Drawingnew("Quad")
-		}
-	end,
-	Tracers = function()
-		return {
-			Outline = Drawingnew("Line"),
-			Tracer = Drawingnew("Line")
-		}
-	end,
-	Names = function()
-		return {
-			Name = Drawingnew("Text"),
-			Data = Drawingnew("Text")
-		}
-	end,
-	Skeletons = function()
-		return (ts and {
-			ChestOutline = Drawingnew("Line"),
-			HipsOutline = Drawingnew("Line"),
-			LeftArmOutline = Drawingnew("Line"),
-			LeftForearmOutline = Drawingnew("Line"),
-			LeftHandOutline = Drawingnew("Line"),
-			RightArmOutline = Drawingnew("Line"),
-			RightForearmOutline = Drawingnew("Line"),
-			RightHandOutline = Drawingnew("Line"),
-			LeftLegOutline = Drawingnew("Line"),
-			LeftForelegOutline = Drawingnew("Line"),
-			LeftFootOutline = Drawingnew("Line"),
-			RightLegOutline = Drawingnew("Line"),
-			RightForelegOutline = Drawingnew("Line"),
-			RightFootOutline = Drawingnew("Line"),
-
-			Chest = Drawingnew("Line"),
-			Hips = Drawingnew("Line"),
-			LeftArm = Drawingnew("Line"),
-			LeftForearm = Drawingnew("Line"),
-			LeftHand = Drawingnew("Line"),
-			RightArm = Drawingnew("Line"),
-			RightForearm = Drawingnew("Line"),
-			RightHand = Drawingnew("Line"),
-			LeftLeg = Drawingnew("Line"),
-			LeftForeleg = Drawingnew("Line"),
-			LeftFoot = Drawingnew("Line"),
-			RightLeg = Drawingnew("Line"),
-			RightForeleg = Drawingnew("Line"),
-			RightFoot = Drawingnew("Line")
-		}) or {
-
-			UpperTorsoOutline = Drawingnew("Line"),
-			LowerTorsoOutline = Drawingnew("Line"),
-			LeftUpperArmOutline = Drawingnew("Line"),
-			LeftLowerArmOutline = Drawingnew("Line"),
-			LeftHandOutline = Drawingnew("Line"),
-			RightUpperArmOutline = Drawingnew("Line"),
-			RightLowerArmOutline = Drawingnew("Line"),
-			RightHandOutline = Drawingnew("Line"),
-			LeftUpperLegOutline = Drawingnew("Line"),
-			LeftLowerLegOutline = Drawingnew("Line"),
-			LeftFootOutline = Drawingnew("Line"),
-			RightUpperLegOutline = Drawingnew("Line"),
-			RightLowerLegOutline = Drawingnew("Line"),
-			RightFootOutline = Drawingnew("Line"),
-
-			UpperTorso = Drawingnew("Line"),
-			LowerTorso = Drawingnew("Line"),
-			LeftUpperArm = Drawingnew("Line"),
-			LeftLowerArm = Drawingnew("Line"),
-			LeftHand = Drawingnew("Line"),
-			RightUpperArm = Drawingnew("Line"),
-			RightLowerArm = Drawingnew("Line"),
-			RightHand = Drawingnew("Line"),
-			LeftUpperLeg = Drawingnew("Line"),
-			LeftLowerLeg = Drawingnew("Line"),
-			LeftFoot = Drawingnew("Line"),
-			RightUpperLeg = Drawingnew("Line"),
-			RightLowerLeg = Drawingnew("Line"),
-			RightFoot = Drawingnew("Line"),
-
-			TorsoOutline = Drawingnew("Line"),
-			["Left ArmOutline"] = Drawingnew("Line"),
-			["Right ArmOutline"] = Drawingnew("Line"),
-			["Left LegOutline"] = Drawingnew("Line"),
-			["Right LegOutline"] = Drawingnew("Line"),
-
-			Torso = Drawingnew("Line"),
-			["Left Arm"] = Drawingnew("Line"),
-			["Right Arm"] = Drawingnew("Line"),
-			["Left Leg"] = Drawingnew("Line"),
-			["Right Leg"] = Drawingnew("Line")
-		}
-	end,
-	HealthBars = function()
-		return {
-			Outline = Drawingnew("Quad"),
-			Bar = Drawingnew("Quad")
-		}
-	end,
-	HeadDots = function()
-		return {
-			Outline = Drawingnew("Circle"),
-			Dot = Drawingnew("Circle")
-		}
-	end,
-	LookTracers = function()
-		return {
-			Outline = Drawingnew("Line"),
-			Tracer = Drawingnew("Line")
-		}
-	end,
-	Labels = function()
-		return {
-			Label = Drawingnew("Text")
-		}
-	end,
-	Chams = function()
-		return {
-			Top = Drawingnew("Quad"),
-			Bottom = Drawingnew("Quad"),
-			Left = Drawingnew("Quad"),
-			Right = Drawingnew("Quad"),
-			Front = Drawingnew("Quad"),
-			Back = Drawingnew("Quad")
-		}
-	end
-}
-local RemoveFunction = {
-	Boxes = function(self)
-		if self.Destroyed then return end
-		self.Object.Box:Remove()
-		self.Object.Outline:Remove()
-		self.Destroyed = true
-	end,
-	Tracers = function(self)
-		if self.Destroyed then return end
-		self.Object.Tracer:Remove()
-		self.Object.Outline:Remove()
-		self.Destroyed = true
-	end,
-	Names = function(self)
-		if self.Destroyed then return end
-		self.Object.Name:Remove()
-		self.Object.Data:Remove()
-		self.Destroyed = true
-	end,
-	Skeletons = function(self)
-		if self.Destroyed then return end
-		for _,v in next, self.Object do
-			v:Remove()
-		end
-		self.Destroyed = true
-	end,
-	HealthBars = function(self)
-		if self.Destroyed then return end
-		self.Object.Bar:Remove()
-		self.Object.Outline:Remove()
-		self.Destroyed = true
-	end,
-	HeadDots = function(self)
-		if self.Destroyed then return end
-		self.Object.Dot:Remove()
-		self.Object.Outline:Remove()
-		self.Destroyed = true
-	end,
-	LookTracers = function(self)
-		if self.Destroyed then return end
-		self.Object.Tracer:Remove()
-		self.Object.Outline:Remove()
-		self.Destroyed = true
-	end,
-	Labels = function(self)
-		if self.Destroyed then return end
-		self.Object.Label:Remove()
-		self.AncestryChanged:Disconnect()
-		self.Destroyed = true
-	end,
-	Chams = function(self)
-		if self.Destroyed then return end
-		self.Object.Top:Remove()
-		self.Object.Bottom:Remove()
-		self.Object.Left:Remove()
-		self.Object.Right:Remove()
-		self.Object.Front:Remove()
-		self.Object.Back:Remove()
-		self.AncestryChanged:Disconnect()
-		self.Destroyed = true
-	end
-}
-function NewObject(type)
-	local obj = Object[type]()
-	SetProp(obj, "Visible", false)
-	ApplyZIndex(obj, type)
-	return obj
-end
-function NewCharacterObject(objs, type, plr)
-	ID += 1
-
-	local t = {
-		Object = objs,
-		Type = type,
-		Player = plr,
-		NPC = plr.ClassName ~= "Player",
-		Destroyed = false,
-		Id = ID,
-		Remove = RemoveFunction[type]
-	}
-
-	OBJECTS[ID] = t
-
-	return t
-end
-local props = {
-	Labels = {
-		Text = "string",
-		Transparency = "number",
-		Color = "Color3",
-		RainbowColor = "boolean",
-		Size = "number",
-		Outline = "boolean",
-		OutlineColor = "Color3",
-		Font = "number",
-		Offset = "Vector2"
-	},
-	Chams = {
-		Transparency = "number",
-		Color = "Color3",
-		RainbowColor = "boolean",
-		Thickness = "number",
-		Filled = "boolean"
-	}
-}
-function PartSetPart(self, p)
-	assert(typeof(p) == "Instance", ("Universal Esp: bad argument #1 to 'SetPart' (Instance expected, got %s)"):format(typeof(p)))
-	assert(tablefind(supportedparts, p.ClassName), ("Universal Esp: bad argument #1 to 'SetPart' (BasePart or Model expected, got %s)"):format(p.ClassName))
-	self.Part = p
-end
-function PartSetProp(self, prop, value)
-	assert(prop ~= nil, "Universal Esp: bad argument #1 to 'SetProp' (property is nil)")
-	assert(self.Options[prop] ~= nil, "Universal Esp: bad argument #1 to 'SetProp' (invalid property)")
-	local expected, got = props[self.Type][prop], typeof(value)
-	assert(expected == got,("Universal Esp: bad argument to #2 'SetProp' (%s expected, got %s)"):format(expected, got))
-	self.Options[prop] = value
-end
-function NewPartObject(objs, type, part, options)
-	ID += 1
-
-	local t = {
-		Object = objs,
-		Type = type,
-		Part = part,
-		Options = options,
-		Destroyed = false,
-		Id = ID,
-		AncestryChanged = nil,
-		SetPart = PartSetPart,
-		SetProp = PartSetProp,
-		Remove = RemoveFunction[type]
-	}
-	t.AncestryChanged = part.AncestryChanged:Connect(function(_, parent)
-		if parent == nil then
-			t:Remove()
-			return
-		end
-		t:SetPart(parent:FindFirstChild(part.Name))
-	end)
-
-	OBJECTS[ID] = t
-
-	return t
 end
 
-local ss = getgenv().EspSettings
-local origins = {}
-local mousepos = Vector2.zero
-local ffa = IsFFA()
-local myteam = GetTeam(player)
-local ccf = camera.CFrame.Position
-local camfov = camera.FieldOfView
-local rainbow = fromHSV(tick() % 5 / 5, 1, 1)
-local teamcheck = ss.TeamCheck
-local maxdist = ss.MaximumDistance
-local facecamera = ss.FaceCamera
-local alignpoints = ss.AlignPoints
-local refreshrate = ss.RefreshRate / 1000
-
-local mv_enabled = mousevis.Enabled
-local mv_selected = mousevis.Selected
-local mv_transparency = mousevis.Transparency
-local mv_method = mousevis.Method and lower(mousevis.Method) or nil
-local mv_radius = mousevis.Radius
-local mv_hoverradius = mousevis.HoverRadius or 10
-
-local hl_enabled = highlights.Enabled
-local hl_players = highlights.Players
-local hl_color = highlights.Color 
-local hl_transparency = highlights.Transparency
-local hl_ontop = highlights.AlwaysOnTop
-
-local npc_overrides = npcs.Overrides
-local npc_color = npcs.Color
-local npc_transparency = npcs.Transparency
-local npc_rainbow = npcs.Rainbow
-
-local Boxes = ss.Boxes
-local Tracers = ss.Tracers
-local Names = ss.Names
-local Skeletons = ss.Skeletons
-local HealthBars = ss.HealthBars
-local HeadDots = ss.HeadDots
-local LookTracers = ss.LookTracers
-function UpdateVariables()
-	ss = getgenv().EspSettings
-	mousepos = GetMouseLocation(uis)
-	local x, y = camera.ViewportSize.X, camera.ViewportSize.Y
-	origins = {
-		top = Vector2new(x / 2, 0),
-		center = Vector2new(x / 2, y / 2),
-		bottom = Vector2new(x / 2, y),
-		mouse = mousepos
-	}
-	ffa = IsFFA()
-	myteam = GetTeam(player)
-	ccf = camera.CFrame.Position
-	camfov = camera.FieldOfView
-	rainbow = fromHSV(tick() % 5 / 5, 1, 1)
-	teamcheck = ss.TeamCheck
-	maxdist = ss.MaximumDistance
-	facecamera = ss.FaceCamera
-	alignpoints = ss.AlignPoints
-	refreshrate = ss.RefreshRate / 1000
-	mv_enabled = mousevis.Enabled
-	mv_selected = mousevis.Selected
-	mv_transparency = mousevis.Transparency
-	mv_method = mousevis.Method and lower(mousevis.Method) or nil
-	mv_radius = mousevis.Radius
-	mv_hoverradius = mousevis.HoverRadius
-	hl_enabled = highlights.Enabled
-	hl_players = highlights.Players
-	hl_color = highlights.Color 
-	hl_transparency = highlights.Transparency
-	hl_ontop = highlights.Always
-	npc_overrides = npcs.Overrides
-	npc_color = npcs.Color
-	npc_transparency = npcs.Transparency
-	npc_rainbow = npcs.Rainbow
-	ss = getgenv().EspSettings
-	Boxes = ss.Boxes
-	Tracers = ss.Tracers
-	Names = ss.Names
-	Skeletons = ss.Skeletons
-	HealthBars = ss.HealthBars
-	HeadDots = ss.HeadDots
-	LookTracers = ss.LookTracers
-end
-UpdateVariables()
-local conn2 = RunService.Heartbeat:Connect(UpdateVariables)
-function UpdateObjects(self)
-	local plr, isnpc = self.Player, self.NPC
-	local cf, size, mid, inViewport, tl, tr, bl, br
-	local tlx, tly, tlz, trx, try, blx, bly, brx, bry, z
-	local head, ltracerto
-	local team, teamcolor
-	local health, maxhealth, mag, overlapping, render
-	local char = plr and GetChar(plr)
-
-	local objs = self.Objects
-	local box = objs.Box.Object
-	local tracer = objs.Tracer.Object
-	local name = objs.Name.Object
-	local skeleton = objs.Skeleton.Object
-	local bar = objs.HealthBar.Object
-	local dot = objs.HeadDot.Object
-	local ltracer = objs.LookTracer.Object
-
-	if VISIBLE and char then
-		local hp = GetHealth(plr)
-		health, maxhealth = hp[1], hp[2]
-		cf, size = char:GetBoundingBox()
-		team, teamcolor = GetTeam(plr), GetTeamColor(plr)
-		mag = (ccf - cf.Position).Magnitude
-		render = (ffa or (not teamcheck or (not ffa and teamcheck and team ~= myteam))) and mag <= maxdist
-		mid, inViewport = WorldToViewportPoint(camera, cf.Position)
-
-		local BOXES = Boxes.Enabled
-		local TRACERS = Tracers.Enabled
-		local NAMES = Names.Enabled
-		local SKELETONS = Skeletons.Enabled
-		local HEALTHBARS = HealthBars.Enabled
-		local HEADDOTS = HeadDots.Enabled
-		local LOOKTRACERS = LookTracers.Enabled
-
-		SetProp(box, "Visible", render and inViewport and BOXES)
-		SetProp(tracer, "Visible", render and inViewport and TRACERS)
-		SetProp(name, "Visible", render and inViewport and NAMES)
-		SetProp(skeleton, "Visible", render and inViewport and SKELETONS)
-		SetProp(bar, "Visible", render and inViewport and HEALTHBARS)
-		SetProp(dot, "Visible", render and inViewport and HEADDOTS)
-		SetProp(ltracer, "Visible", render and inViewport and LOOKTRACERS)
-
-		if render and inViewport then
-			do
-				if facecamera then
-					cf = CFramenew(cf.Position, ccf)
-				end
-				size /= 2
-				local x, y = size.X, size.Y
-				--mid, inViewport = WorldToViewportPoint(camera, cf.Position)
-				tl = WorldToViewportPoint(camera, (cf * CFramenew(-x,  y, 0)).Position)
-				tr = WorldToViewportPoint(camera, (cf * CFramenew( x,  y, 0)).Position)
-				bl = WorldToViewportPoint(camera, (cf * CFramenew(-x, -y, 0)).Position)
-				br = WorldToViewportPoint(camera, (cf * CFramenew( x, -y, 0)).Position)
-	
-				tlx, tly, tlz = tl.X, tl.Y, tl.Z
-				trx, try = tr.X, tr.Y
-				blx, bly = bl.X, bl.Y
-				brx, bry = br.X, br.Y
-				z = mathclamp(1000 / tlz, 8, 12)
-	
-				if facecamera and alignpoints then
-					if tly < try then
-						tly += mathabs(tly - try) / 2
-					else
-						tly += mathabs(try - tly) / 2
-					end
-					try = tly
-	
-					if bly < bry then
-						bly += mathabs(bly - bry) / 2
-					else
-						bly += mathabs(bry - bly) / 2
-					end
-					bry = bly
-				end
-	
-				if ts and char:FindFirstChild("Body") then
-					char = char.Body
-				end
-	
-				if mv_enabled then
-					local method = mv_method
-					if method == "radius" or not method then
-						local mags = {}
-						tableinsert(mags, (mousepos - Vector2new(mid.X, mid.Y)).Magnitude)
-						tableinsert(mags, (mousepos - Vector2new(tlx, tly)).Magnitude)
-						tableinsert(mags, (mousepos - Vector2new(trx, try)).Magnitude)
-						tableinsert(mags, (mousepos - Vector2new(blx, bly)).Magnitude)
-						tableinsert(mags, (mousepos - Vector2new(brx, bry)).Magnitude)
-						
-						tablesort(mags, function(a,b)
-							return a < b
-						end)
-	
-						overlapping = mags[1] <= mv_radius
-					elseif method == "hover" then
-						local x_min = mathmin(tlx, trx, blx, brx) - mv_hoverradius
-						local x_max = mathmax(tlx, trx, blx, brx) + mv_hoverradius
-	
-						local y_min_offset = 0
-						local y_max_offset = 0
-						if Names.Enabled then
-							y_min_offset = Names.Size - 2
-							if Names.ShowHealth or Names.ShowDistance then
-								y_max_offset += Names.Size + 2
-							end
-						end
-						if HealthBars.Enabled then
-							y_max_offset += z 
-						end
-						local y_min = mathmin(tly, try, bly, bry) - y_min_offset - mv_hoverradius
-						local y_max = mathmax(tly, try, bly, bry) + y_max_offset + mv_hoverradius
-	
-						local mousex = mousepos.X
-						local mousey = mousepos.Y
-	
-						overlapping = mousex > x_min and mousex < x_max and mousey > y_min and mousey < y_max
-					end
-				end
-			end
-
-			local highlight = hl_enabled and tablefind(hl_players, plr.Name)
-
-			if BOXES then
-				local type = "Boxes"
-				local certified_npc = isnpc and npc_overrides[type]
-				local color =		(highlight and hl_color) or 
-									 (certified_npc and (npc_rainbow and rainbow or npc_color)) or
-									 (Boxes.RainbowColor and rainbow) or
-									 (Boxes.UseTeamColor and teamcolor) or
-									 Boxes.Color
-				local transparency = (mv_enabled and mv_selected[type] and overlapping and mv_transparency) or
-									 (certified_npc and npc_transparency) or
-									 (highlight and hl_transparency) or
-									 Boxes.Transparency
-				ApplyZIndex(box, type, highlight and hl_ontop)
-				SetProp(box, "Color", color)
-				SetProp(box, "Transparency", transparency)
-
-				local box, out = box.Box, box.Outline
-				box.Thickness = Boxes.Thickness
-				box.PointA = Vector2new(trx, try)
-				box.PointB = Vector2new(tlx, tly)
-				box.PointC = Vector2new(blx, bly)
-				box.PointD = Vector2new(brx, bry)
-
-				if OUTLINES then
-					out.Visible = Boxes.Outline and box.Visible
-					if Boxes.Outline then
-						out.Color = Boxes.OutlineColor
-						out.Thickness = Boxes.Thickness + (Boxes.OutlineThickness * 2)
-						out.PointA = box.PointA
-						out.PointB = box.PointB
-						out.PointC = box.PointC
-						out.PointD = box.PointD
-					end
-				end
-			end
-	
-			if TRACERS then
-				local type = "Tracers"
-				local certified_npc = isnpc and npc_overrides[type]
-				local color =		(highlight and hl_color) or 
-									 (certified_npc and (npc_rainbow and rainbow or npc_color)) or
-									 (Tracers.RainbowColor and rainbow) or
-									 (Tracers.UseTeamColor and teamcolor) or
-									 Tracers.Color
-				local transparency = (mv_enabled and mv_selected[type] and overlapping and mv_transparency) or
-									 (certified_npc and npc_transparency) or
-									 (highlight and hl_transparency) or
-									 Tracers.Transparency
-				ApplyZIndex(tracer, type, highlight and hl_ontop)
-				SetProp(tracer, "Color", color)
-				SetProp(tracer, "Transparency", transparency)
-
-				local thickness, outline, origin = Tracers.Thickness, Tracers.Outline, lower(Tracers.Origin)
-				local tracer, out = tracer.Tracer, tracer.Outline
-				tracer.Thickness = thickness
-
-				local from = origins[origin]
-				local to = Vector2new(tlx + (trx - tlx) / 2, tly + (try - tly) / 2)
-				tracer.From = from
-				tracer.To = to
-				if origin == "bottom" then
-					to = Vector2new(blx + (brx - blx) / 2, bly + (bry - bly) / 2)
-					tracer.To = to
-				end
-
-				if OUTLINES then
-					out.Visible = outline and tracer.Visible
-					if outline then
-						out.Color = Tracers.OutlineColor
-						out.Thickness = thickness + (Tracers.OutlineThickness * 2)
-						out.From = from
-						out.To = to
-					end
-				end
-			end
-	
-			if NAMES then
-				local type = "Names"
-				local certified_npc = isnpc and npc_overrides[type]
-				local color =		(highlight and hl_color) or 
-									 (certified_npc and (npc_rainbow and rainbow or npc_color)) or
-									 (Names.RainbowColor and rainbow) or
-									 (Names.UseTeamColor and teamcolor) or
-									 Names.Color
-				local transparency = (mv_enabled and mv_selected[type] and overlapping and mv_transparency) or
-									 (certified_npc and npc_transparency) or
-									 (highlight and hl_transparency) or
-									 Names.Transparency
-				ApplyZIndex(name, type, highlight and hl_ontop)
-				SetProp(name, "Color", color)
-				SetProp(name, "Transparency", transparency)
-
-				SetProp(name, "Size", Names.Size)
-				SetProp(name, "Outline", Names.Outline)
-				SetProp(name, "OutlineColor", Names.OutlineColor)
-				SetProp(name, "Font", Names.Font)
-				local name, data = name.Name, name.Data
-				local h,l = (tly > try and tly) or try, (tly < try and tly) or try
-				
-				name.Position = Vector2new(tlx + (trx - tlx) / 2, (h + (l - h) / 2) - (Names.Size + 2))
-				data.Position = Vector2new(blx + (brx - blx) / 2, bly + (bry - bly) / 2)
-				if ss.HealthBars.Enabled then
-					data.Position = Vector2new(data.Position.X, data.Position.Y + z)
-				end
-
-				if isnpc then
-					name.Text = "[NPC] "
-				end
-				name.Text = (Names.UseDisplayName and plr.DisplayName) or plr.Name
-
-				data.Text = ""
-				if Names.ShowDistance then
-					data.Text = "[ "..mathfloor(mag)..Names.DistanceDataType.." ]"
-				end
-				if Names.ShowHealth then
-					local a = lower(Names.HealthDataType)
-					if a == "percentage" then
-						data.Text = data.Text.." [ "..mathfloor((health / maxhealth) * 100).."% ]"
-					elseif a == "value" then
-						data.Text = data.Text.." [ "..mathfloor(health).."/"..mathfloor(maxhealth).." ]"
-					end
-				end
-			end
-	
-			if SKELETONS then
-				local type = "Skeletons"
-				local certified_npc = isnpc and npc_overrides[type]
-				local color =		(highlight and hl_color) or 
-									 (certified_npc and (npc_rainbow and rainbow or npc_color)) or
-									 (Skeletons.RainbowColor and rainbow) or
-									 (Skeletons.UseTeamColor and teamcolor) or
-									 Skeletons.Color
-				local transparency = (mv_enabled and mv_selected[type] and overlapping and mv_transparency) or
-									 (certified_npc and npc_transparency) or
-									 (highlight and hl_transparency) or
-									 Skeletons.Transparency
-				ApplyZIndex(skeleton, type, highlight and hl_ontop)
-				SetProp(skeleton, "Color", color)
-				SetProp(skeleton, "Transparency", transparency)
-				
-				local thickness, othickness, outline = Skeletons.Thickness, Skeletons.OutlineThickness, Skeletons.Outline
-				SetProp(skeleton, "Thickness", thickness)
-
-				for i2,v2 in next, skeleton do
-					local from = char:FindFirstChild(From[i2] or "")
-					local to = char:FindFirstChild(i2 or "")
-					local isoutline = find(i2, "Outline")
-					if not isoutline and from and find(from.ClassName, "Part") and to and find(to.ClassName, "Part") then
-						local pos1, in1 = WorldToViewportPoint(camera, from.Position)
-						local pos2, in2 = WorldToViewportPoint(camera, to.Position)
-						v2.Visible = in1 and in2
-						if in1 and in2 then
-							v2.From = Vector2new(pos1.X, pos1.Y)
-							v2.To = Vector2new(pos2.X, pos2.Y)
-						end
-					end
-				end
-				if OUTLINES then
-					for i2,v2 in next, skeleton do
-						if find(i2, "Outline") then
-							local name = i2:gsub("Outline","")
-							local v3 = skeleton[name]
-							v2.Visible = outline and v3.Visible
-							if v2.Visible then
-								v2.Color = Skeletons.OutlineColor
-								v2.Thickness = thickness + (othickness * 2)
-								v2.From = v3.From
-								v2.To = v3.To
-							end
-						end
-					end
-				end
-			end
-	
-			if HEALTHBARS then
-				local type = "HealthBars"
-				local certified_npc = isnpc and npc_overrides[type]
-				local color =		(highlight and hl_color) or 
-									 (certified_npc and (npc_rainbow and rainbow or npc_color)) or
-									 (HealthBars.RainbowColor and rainbow) or
-									 (HealthBars.UseTeamColor and teamcolor) or
-									 HealthBars.Color
-				local transparency = (mv_enabled and mv_selected[type] and overlapping and mv_transparency) or
-									 (certified_npc and npc_transparency) or
-									 (highlight and hl_transparency) or
-									 HealthBars.Transparency
-				ApplyZIndex(bar, type, highlight and hl_ontop)
-				SetProp(bar, "Color", color)
-				SetProp(bar, "Transparency", transparency)
-
-				local outline, origin, baronly = HealthBars.Outline, HealthBars.Origin:lower(), HealthBars.OutlineBarOnly
-				local bar, out = bar.Bar, bar.Outline
-				health = mathclamp(health, 0, maxhealth) / maxhealth
-				local left, right = blx, brx
-				local lefty, righty = bly, bry
-
-				if origin == "left" then
-					left = (blx < brx and blx) or brx
-					right = (blx > brx and blx) or brx
-
-					lefty = (blx < brx and bly) or bry
-					righty = (blx > brx and bly) or bry
-				elseif origin == "right" then
-					left = (blx < brx and brx) or blx
-					right = (blx > brx and brx) or blx
-
-					lefty = (blx < brx and bry) or bly
-					righty = (blx > brx and bry) or bly
-				end
-
-				bar.PointA = Vector2new(
-					left + (right - left) * health,
-					(lefty + (righty - lefty) * health) + 5
-				)
-				bar.PointB = Vector2new(
-					left,
-					lefty + 5
-				)
-				bar.PointC = Vector2new(
-					left,
-					lefty + z
-				)
-				bar.PointD = Vector2new(
-					left + (right - left) * health,
-					(lefty + (righty - lefty) * health) + z
-				)
-
-				if OUTLINES then
-					out.Visible = outline and bar.Visible
-					if outline then
-						out.Color = HealthBars.OutlineColor
-						out.Thickness = HealthBars.OutlineThickness * 2
-						out.PointA = (baronly and bar.PointA) or Vector2new(brx, bry + 5)
-						out.PointB = (baronly and bar.PointB) or Vector2new(blx, bly + 5)
-						out.PointC = (baronly and bar.PointC) or Vector2new(blx, bly + z)
-						out.PointD = (baronly and bar.PointD) or Vector2new(brx, bry + z)
-					end
-				end
-			end
-	
-			if HEADDOTS then
-				local type = "HeadDots"
-				local certified_npc = isnpc and npc_overrides[type]
-				local color =		(highlight and hl_color) or 
-									 (certified_npc and (npc_rainbow and rainbow or npc_color)) or
-									 (HeadDots.RainbowColor and rainbow) or
-									 (HeadDots.UseTeamColor and teamcolor) or
-									 HeadDots.Color
-				local transparency = (mv_enabled and mv_selected[type] and overlapping and mv_transparency) or
-									 (certified_npc and npc_transparency) or
-									 (highlight and hl_transparency) or
-									 HeadDots.Transparency
-				ApplyZIndex(dot, type, highlight and hl_ontop)
-				SetProp(dot, "Color", color)
-				SetProp(dot, "Transparency", transparency)
-
-				head = char:FindFirstChild("Head")
-				if head then
-					local headcf = head.CFrame
-					head = WorldToViewportPoint(camera, headcf.Position)
-				end
-
-				if head then
-					local thickness, outline, filled = HeadDots.Thickness, HeadDots.Outline, HeadDots.Filled
-					local dot, out = dot.Dot, dot.Outline
-					dot.Thickness = thickness 
-					dot.Filled = filled
-
-					local pos = Vector2new(head.X, head.Y)
-					local radius = z / ((mag / 60) * (camfov / 70)) * HeadDots.Scale
-					dot.Position = pos
-					dot.Radius = radius
-
-					if OUTLINES then
-						out.Visible = outline and dot.Visible
-						if outline  then
-							local othickness = thickness + (HeadDots.OutlineThickness * 2)
-							out.Color = HeadDots.OutlineColor
-							out.Thickness = (filled and thickness + (othickness - 1)) or othickness
-							out.Position = pos
-							out.Radius = (filled and radius + 1) or radius
-						end
-					end
-				else
-					SetProp(dot, "Visible", false)
-				end
-			end
-	
-			if LOOKTRACERS then
-				local type = "LookTracers"
-				local certified_npc = isnpc and npc_overrides[type]
-				local color =		(highlight and hl_color) or 
-									 (certified_npc and (npc_rainbow and rainbow or npc_color)) or
-									 (LookTracers.RainbowColor and rainbow) or
-									 (LookTracers.UseTeamColor and teamcolor) or
-									 LookTracers.Color
-				local transparency = (mv_enabled and mv_selected[type] and overlapping and mv_transparency) or
-									 (certified_npc and npc_transparency) or
-									 (highlight and hl_transparency) or
-									 LookTracers.Transparency
-				ApplyZIndex(ltracer, type, highlight and hl_ontop)
-				SetProp(ltracer, "Color", color)
-				SetProp(ltracer, "Transparency", transparency)
-
-				head = char:FindFirstChild("Head")
-				if head then
-					local headcf = head.CFrame
-					head = WorldToViewportPoint(camera, headcf.Position)
-					ltracerto = WorldToViewportPoint(camera, (headcf * CFramenew(0, 0, -LookTracers.Length)).Position)
-				end
-
-				if head then
-					local thickness, outline = LookTracers.Thickness, LookTracers.Outline
-					local tracer, out = ltracer.Tracer, ltracer.Outline
-					tracer.Thickness = thickness
-
-					local from = Vector2new(head.X, head.Y)
-					local to = Vector2new(ltracerto.X, ltracerto.Y)
-					tracer.From = from
-					tracer.To = to
-
-					if OUTLINES then
-						out.Visible = outline and tracer.Visible
-						if outline then
-							out.Color = LookTracers.OutlineColor
-							out.Thickness = thickness + (LookTracers.OutlineThickness * 2)
-							out.From = from
-							out.To = to
-						end
-					end
-				else
-					SetProp(ltracer, "Visible", false)
-				end
-			end
-		end
-	else
-		SetProp(box, "Visible", false)
-		SetProp(tracer, "Visible", false)
-		SetProp(name, "Visible", false)
-		SetProp(skeleton, "Visible", false)
-		SetProp(bar, "Visible", false)
-		SetProp(dot, "Visible", false)
-		SetProp(ltracer, "Visible", false)
-	end
-end
-function UpdatePartObjects(self)
-	local part = self.Part
-	local type = self.Type
-	local obj = self.Objects
-	local s = self.Options
-
-	local cf, size, inViewport
-	local c0, c1, c2, c3, c4, c5, c6, c7, c8
-
-	if VISIBLE then
-		local class = part.ClassName
-		if find(class, "Part") or find(class, "Operation") then
-			cf, size = part.CFrame, part.Size / 2
-		elseif class == "Model" then
-			cf, size = part:GetBoundingBox()
-			size /= 2
-		end
-		local x, y, z = size.X, size.Y, size.Z
-		c0, inViewport = WorldToViewportPoint(camera,cf.Position)
-		if type == "Chams" and inViewport then
-			c1 = WorldToViewportPoint(camera, (cf * CFramenew( x,  y,  z)).Position)
-			c2 = WorldToViewportPoint(camera, (cf * CFramenew(-x,  y,  z)).Position)
-			c3 = WorldToViewportPoint(camera, (cf * CFramenew(-x, -y,  z)).Position)
-			c4 = WorldToViewportPoint(camera, (cf * CFramenew( x, -y,  z)).Position)
-			c5 = WorldToViewportPoint(camera, (cf * CFramenew( x,  y, -z)).Position)
-			c6 = WorldToViewportPoint(camera, (cf * CFramenew(-x,  y, -z)).Position)
-			c7 = WorldToViewportPoint(camera, (cf * CFramenew(-x, -y, -z)).Position)
-			c8 = WorldToViewportPoint(camera, (cf * CFramenew( x, -y, -z)).Position)
-
-			c1 = Vector2new(c1.X, c1.Y)
-			c2 = Vector2new(c2.X, c2.Y)
-			c3 = Vector2new(c3.X, c3.Y)
-			c4 = Vector2new(c4.X, c4.Y)
-			c5 = Vector2new(c5.X, c5.Y)
-			c6 = Vector2new(c6.X, c6.Y)
-			c7 = Vector2new(c7.X, c7.Y)
-			c8 = Vector2new(c8.X, c8.Y)
-		end
-
-		SetProp(obj, "Visible", inViewport)
-
-		if inViewport then
-			local color = (s.RainbowColor and rainbow) or s.Color
-			SetProp(obj, "Transparency", s.Transparency)
-			SetProp(obj, "Color", color)
-			if type == "Labels" then
-				local label = obj.Label
-				label.Text = s.Text
-				label.Size = s.Size
-				label.Outline = s.Outline
-				label.OutlineColor = s.OutlineColor
-				label.Font = s.Font
-
-				label.Position = Vector2new(c0.X, c0.Y - (s.Size) / 2) + s.Offset
-			elseif type == "Chams" then
-				local t, b, l, r, f, bb = obj.Top, obj.Bottom, obj.Left, obj.Right, obj.Front, obj.Back
-				SetProp(obj, "Filled", s.Filled)
-				SetProp(obj, "Thickness", s.Thickness)
-
-				t.PointA = c5
-				t.PointB = c6
-				t.PointC = c2
-				t.PointD = c1
-
-				b.PointA = c4
-				b.PointB = c3
-				b.PointC = c7
-				b.PointD = c8
-
-				l.PointA = c2
-				l.PointB = c6
-				l.PointC = c7
-				l.PointD = c3
-
-				r.PointA = c5
-				r.PointB = c1
-				r.PointC = c4
-				r.PointD = c8
-
-				f.PointA = c1
-				f.PointB = c2
-				f.PointC = c3
-				f.PointD = c4
-
-				bb.PointA = c5
-				bb.PointB = c6
-				bb.PointC = c7
-				bb.PointD = c8
-			end
-		end
-	else
-		SetProp(obj, "Visible", false)
-	end
-end
-function UpdateParallel(self)
-	taskspawn(function()
-		while true do
-			local clock = osclock()
-			if refreshrate > 0 and (clock - self.LastUpdate) < refreshrate then
-				taskwait()
-				continue
-			end
-			self.LastUpdate = clock
-
-			if self.Destroyed then
-				break
-			end
-			self:Update()
-			taskwait()
-		end
-	end)
+function espLibrary.getScaleFactor(fov, depth)
+if (fov ~= lastFov) then
+lastScale = tan(rad(fov * 0.5)) * 2;
+lastFov = fov;
 end
 
-function NewDrawing(type, target, options)
-	local drawobjs = NewObject(type)
-	local obj = (options ~= nil and NewPartObject(drawobjs, type, target, options)) or NewCharacterObject(drawobjs, type, target)
-	return drawobjs, obj
-end
-function NewPlayer(plr)
-	local Box, BoxObj = NewDrawing("Boxes", plr)
-	SetProp(Box, "Filled", false)
-
-	local Tracer, TracerObj = NewDrawing("Tracers", plr)
-
-	local Name, NameObj = NewDrawing("Names", plr)
-	SetProp(Name, "Center", true)
-
-	local Skeleton, SkeletonObj = NewDrawing("Skeletons", plr)
-
-	local HealthBar, HealthBarObj = NewDrawing("HealthBars", plr)
-	SetProp(HealthBar, "Thickness", 1)
-	HealthBar.Bar.Filled = true
-	HealthBar.Outline.Filled = false
-
-	local HeadDot, HeadDotObj = NewDrawing("HeadDots", plr)
-
-	local LookTracer, LookTracerObj = NewDrawing("LookTracers", plr)
-
-	local t = {}
-	t.Destroyed = false
-	t.Player = plr
-	t.NPC = plr.ClassName ~= "Player"
-	t.Objects = {
-		Box = BoxObj,
-		Tracer = TracerObj,
-		Name = NameObj,
-		Skeleton = SkeletonObj,
-		HealthBar = HealthBarObj,
-		HeadDot = HeadDotObj,
-		LookTracer = LookTracerObj
-	}
-	t.Update = UpdateObjects
-	t.LastUpdate = osclock()
-	t.Destroy = function(self)
-		if self.Destroyed then return end
-		self.Destroyed = true
-		for _,v in next, self.Objects do
-			v:Remove()
-		end
-	end
-
-	PlayerObjects[plr] = t
-
-	UpdateParallel(t)
+return 1 / (depth * lastScale) * 1000;
 end
 
-function NewLabel(part, options)
-	local o = {
-		Text = options.Text or part.Name,
-		Transparency = options.Transparency or 1,
-		Color = options.Color or white,
-		RainbowColor = ternary(options.RainbowColor ~= nil, options.RainbowColor, false),
-		Size = options.Size or 18,
-		Outline = ternary(options.Outline ~= nil, options.Outline, true),
-		OutlineColor = options.OutlineColor or black,
-		Font = options.Font or Fonts.UI,
-		Offset = options.Offset or Vector2new()
-	}
+function espLibrary.getBoxData(position, size)
+local torsoPosition, onScreen, depth = worldToViewportPoint(position);
+local scaleFactor = espLibrary.getScaleFactor(currentCamera.FieldOfView, depth);
 
-	local Label, LabelObj = NewDrawing("Labels", part, o)
-	Label.Label.Visible = false
-	Label.Label.Center = true
+local clampX = clamp(size.X, espLibrary.options.minScaleFactorX, espLibrary.options.maxScaleFactorX);
+local clampY = clamp(size.Y, espLibrary.options.minScaleFactorY, espLibrary.options.maxScaleFactorY);
+local size = round(vector2New(clampX * scaleFactor, clampY * scaleFactor));
 
-	local t = {}
-	t.Destroyed = false
-	t.Part = part
-	t.Options = o
-	t.Objects = LabelObj.Object
-	t.Type = "Labels"
-	t.Update = UpdatePartObjects
-	t.LastUpdate = osclock()
-	t.Destroy = function(self)
-		if self.Destroyed then return end
-		self.Destroyed = true
-		for _,v in next, self.Objects do
-			v:Remove()
-		end
-	end
-
-	PlayerObjects[part] = t
-	UpdateParallel(t)
-
-	return LabelObj
-end
-function NewCham(part, options)
-	local o = {
-		Transparency = options.Transparency or 1,
-		Color = options.Color or white,
-		RainbowColor = ternary(options.RainbowColor ~= nil, options.RainbowColor, false),
-		Thickness = options.Thickness or 3,
-		Filled = ternary(options.Filled ~= nil, options.Filled, true)
-	}
-
-	local Cham, ChamObj = NewDrawing("Chams", part, o)
-
-	local t = {}
-	t.Destroyed = false
-	t.Part = part
-	t.Options = o
-	t.Type = "Chams"
-	t.Objects = ChamObj.Object
-	t.Update = UpdatePartObjects
-	t.LastUpdate = osclock()
-	t.Destroy = function(self)
-		if self.Destroyed then return end
-		self.Destroyed = true
-		for _,v in next, self.Objects do
-			v:Remove()
-		end
-	end
-
-	PlayerObjects[part] = t
-	UpdateParallel(t)
-
-	return ChamObj
+return onScreen, size, round(vector2New(torsoPosition.X - (size.X * 0.5), torsoPosition.Y - (size.Y * 0.5))), torsoPosition;
 end
 
-if typeof(ss.ToggleKey) == "EnumItem" then
-	ss.ToggleKey = ss.ToggleKey.Name
-end
-local conn3 = uis.InputBegan:Connect(function(i,gp)
-	if not gp and i.KeyCode == Enum.KeyCode[ss.ToggleKey] then
-		VISIBLE = not VISIBLE
-	end
-end)
-for _,v in next, players:GetPlayers() do
-	if v ~= player then
-		NewPlayer(v)
-	end
-end
-local conn4 = players.PlayerAdded:Connect(NewPlayer)
+function espLibrary.getHealth(player, character)
+local humanoid = findFirstChild(character, "Humanoid");
 
-local esp = {Version = VERSION}
-local destroyed = false
+if (humanoid) then
+return humanoid.Health, humanoid.MaxHealth;
+end
 
-function ValidType(type)
-	return type == "Other" or ss[type] ~= nil
+return 100, 100;
 end
-function ValidOption(type,option)
-	return (type == "Other" and ss[option] ~= nil) or ss[type][option] ~= nil
+
+function espLibrary.visibleCheck(character, position)
+local origin = currentCamera.CFrame.Position;
+local params = raycastParamsNew();
+
+params.FilterDescendantsInstances = { espLibrary.getCharacter(localPlayer), currentCamera, character };
+params.FilterType = Enum.RaycastFilterType.Blacklist;
+params.IgnoreWater = true;
+
+return (not raycast(workspace, origin, position - origin, params));
 end
-function esp:Toggle(type)
-	assert(ValidType(type),"Universal Esp: bad argument to #1 'Toggle' (Invalid Type)")
-	if ss[type].Enabled == nil then
-		ss[type] = not ss[type]
-	else
-		ss[type].Enabled = not ss[type].Enabled
-	end
+
+function espLibrary.addEsp(player)
+if (player == localPlayer) then
+return
 end
-function esp:Get(type,option)
-	assert(ValidType(type),"Universal Esp: bad argument to #1 'Get' (Invalid Type)")
-	assert(ValidOption(type, option),"Universal Esp: bad argument to #2 'Get' (Invalid Option)")
-	if type == "Other" then
-		return ss[option]
-	end
-	return ss[type][option]
+
+local objects = {
+arrow = create("Triangle", {
+Thickness = 1,
+}),
+arrowOutline = create("Triangle", {
+Thickness = 1,
+}),
+top = create("Text", {
+Center = true,
+Size = 13,
+Outline = true,
+OutlineColor = color3New(),
+Font = 2,
+}),
+side = create("Text", {
+Size = 13,
+Outline = true,
+OutlineColor = color3New(),
+Font = 2,
+}),
+bottom = create("Text", {
+Center = true,
+Size = 13,
+Outline = true,
+OutlineColor = color3New(),
+Font = 2,
+}),
+boxFill = create("Square", {
+Thickness = 1,
+Filled = true,
+}),
+boxOutline = create("Square", {
+Thickness = 3,
+Color = color3New()
+}),
+box = create("Square", {
+Thickness = 1
+}),
+healthBarOutline = create("Square", {
+Thickness = 1,
+Color = color3New(),
+Filled = true
+}),
+healthBar = create("Square", {
+Thickness = 1,
+Filled = true
+}),
+line = create("Line")
+};
+
+espLibrary.espCache[player] = objects;
 end
-function esp:Set(type,option,value)
-	assert(ValidType(type),"Universal Esp: bad argument to #1 'Set' (Invalid Type)")
-	assert(ValidOption(type, option),"Universal Esp: bad argument to #2 'Set' (Invalid Option)")
-	assert(value ~= nil,"Universal Esp: bad argument to #3 'Set'")
-	if type == "Other" then
-		ss[option] = value
-	else
-		ss[type][option] = value
-	end
+
+function espLibrary.removeEsp(player)
+local espCache = espLibrary.espCache[player];
+
+if (espCache) then
+espLibrary.espCache[player] = nil;
+
+for index, object in next, espCache do
+espCache[index] = nil;
+object:Remove();
 end
-function esp:SetAll(option,value)
-	assert(Base[option] == nil,"Universal Esp: bad argument to #1 'SetAll' (Invalid Option)")
-	assert(value ~= nil,"Universal Esp: bad argument to #2 'SetAll'")
-	for i,v in next, ss do
-		if typeof(v) == "table" and zindex[i] ~= nil then
-			v[option] = value
-		end
-	end
 end
-function esp.Label(part,options)
-	assert(typeof(part) == "Instance", ("Universal Esp: bad argument to #1 'Label' (Instance expected, got %s)"):format(typeof(part)))
-	assert(table.find(supportedparts, part.ClassName),("Universal Esp: bad argument to #1 'Label' (Part or Model expected, got %s)"):format(part.ClassName))
-	return NewLabel(part, options or {})
 end
-function esp.Cham(part,options)
-	assert(typeof(part) == "Instance",("Universal Esp: bad argument to #1 'Cham' (Instance expected, got %s)"):format(typeof(part)))
-	assert(table.find(supportedparts, part.ClassName),("Universal Esp: bad argument to #1 'Cham' (Part or Model expected, got %s)"):format(part.ClassName))
-	return NewCham(part, options or {})
+
+function espLibrary.addChams(player)
+if (player == localPlayer) then
+return
 end
-function esp:GetObjects(a)
-	a = a or ""
-	local t = typeof(a)
-	if (t == "Instance" and a.ClassName == "Player") or (t == "string" and players:FindFirstChild(a)) then
-		local plr = (t == "string" and players[a]) or a
-		local objects = {
-			['Boxes'] = nil,
-			['Tracers'] = nil,
-			['Names'] = nil,
-			['Skeletons'] = nil,
-			['HealthBars'] = nil,
-			['HeadDots'] = nil,
-			['LookTracers'] = nil
-		}
-		for _,v in next, OBJECTS do
-			if v.Player == plr then
-				objects[v.Type] = v
-			end
-		end
-		return objects
-	elseif typeof(a) == "string" then
-		if zindex[a] ~= nil then
-			local objects = {}
-			for _,v in next, OBJECTS do
-				if v.Type == a then
-					tableinsert(objects, v)
-				end
-			end
-			return objects
-		elseif a == "" then
-			return OBJECTS
-		end
-	end
-	return {}
+
+espLibrary.chamsCache[player] = create("Highlight", {
+Parent = screenGui,
+});
 end
-function esp:GetTotalObjects()
-	local data = {
-		DrawingObjects = 0,
-		VisibleObjects = 0,
-		DestroyedObjects = 0,
-		NPCObjects = 0,
-		Boxes = 0,
-		Tracers = 0,
-		Names = 0,
-		Skeletons = 0,
-		HealthBars = 0,
-		HeadDots = 0,
-		LookTracers = 0,
-		Labels = 0,
-		Chams = 0,
-		Outlines = 0
-	}
-	for _,v in next, OBJECTS do
-		for i2,v2 in next, v.Object do
-			if not v.Destroyed then
-				data.DrawingObjects += 1
-				if v2.Visible then
-					data.VisibleObjects += 1
-				end
-				if v.NPC then
-					data.NPCObjects += 1
-				end
-				if find(i2, "Outline") then
-					data.Outlines += 1
-				else
-					data[v.Type] += 1
-				end
-			else
-				data.DestroyedObjects += 1
-			end
-		end
-	end
-	return data
+
+function espLibrary.removeChams(player)
+local highlight = espLibrary.chamsCache[player];
+
+if (highlight) then
+espLibrary.chamsCache[player] = nil;
+highlight:Destroy();
 end
-function esp:GetObjectFromId(id)
-	return OBJECTS[id]
 end
-function hasesp(a)
-	for _,v in next, OBJECTS do
-		if (v.Player ~= nil or v.NPC) and v.Player == a and not v.Destroyed then
-			return true
-		end
-	end
-	return false
+
+function espLibrary.addObject(object, options)
+espLibrary.objectCache[object] = {
+options = options,
+text = create("Text", {
+Center = true,
+Size = 13,
+Outline = true,
+OutlineColor = color3New(),
+Font = 2,
+})
+};
 end
-function esp:Add(a)
-	a = a or ""
-	local t = typeof(a)
-	if (t == "Instance" and a.ClassName == "Player" or a.ClassName == "Model") or (t == "string" and players:FindFirstChild(a)) then
-		local plr = (t == "string" and players[a]) or a
-		if not hasesp(plr) then
-			NewPlayer(plr)
-		end
-	end
+
+function espLibrary.removeObject(object)
+local cache = espLibrary.objectCache[object];
+
+if (cache) then
+espLibrary.objectCache[object] = nil;
+cache.text:Remove();
 end
-function esp:Remove(a)
-	a = a or ""
-	local t = typeof(a)
-	if (t == "Instance" and a.ClassName == "Player" or a.ClassName == "Model") or (t == "string" and players:FindFirstChild(a)) then
-		local plr = (t == "string" and players[a]) or a
-		if hasesp(plr) then
-			for _,v in next, OBJECTS do
-				if v.Player ~= nil and v.Player == plr then
-					v:Remove()
-				end
-			end
-		end
-	end
 end
---[[function esp:DisableOutlines()
-	OUTLINES = false
-	for _,v in next, OBJECTS do
-		for i2,v2 in next, v.Object do
-			if i2:find("Outline") then
-				v2:Remove()
-			end
-		end
-	end
-end]]
-function esp:SetFunction(a,f)
-	assert(typeof(a) == "string",("Universal Esp: bad argument to #1 'SetFunction' (string expected, got %s)"):format(typeof(a)))
-	assert(typeof(f) == "function",("Universal Esp: bad argument to #2 'SetFunction' (function expected, got %s)"):format(typeof(f)))
-	a = lower(a)
-	assert(oldfuncs[a] ~= nil,"Universal Esp: bad argument to #1 'SetFunction' (invalid function)")
-	if a == "alive" then
-		IsAlive = f
-	elseif a == "character" then
-		GetChar = f
-	elseif a == "health" then
-		GetHealth = f
-	elseif a == "team" then
-		GetTeam = f
-	elseif a == "teamcolor" then
-		GetTeamColor = f
-	elseif a == "ffa" then
-		IsFFA = f
-	end
+
+function espLibrary:AddObjectEsp(object, defaultOptions)
+assert(object and object.Parent, "invalid object passed");
+
+local options = defaultOptions or {};
+
+options.enabled = options.enabled or true;
+options.limitDistance = options.limitDistance or false;
+options.maxDistance = options.maxDistance or false;
+options.visibleOnly = options.visibleOnly or false;
+options.color = options.color or color3New(1, 1, 1);
+options.transparency = options.transparency or 1;
+options.text = options.text or object.Name;
+options.font = options.font or 2;
+options.fontSize = options.fontSize or 13;
+
+self.addObject(object, options);
+
+insert(self.conns, object.Parent.ChildRemoved:Connect(function(child)
+if (child == object) then
+self.removeObject(child);
 end
-function esp:ResetFunction(a)
-	assert(typeof(a) == "string",("Universal Esp: bad argument to #1 'ResetFunction' (string expected, got %s)"):format(typeof(a)))
-	a = lower(a)
-	assert(oldfuncs[a] ~= nil,"Universal Esp: bad argument to #1 'ResetFunction' (invalid function)")
-	local f = oldfuncs[a]
-	if a == "alive" then
-		IsAlive = f
-	elseif a == "character" then
-		GetChar = f
-	elseif a == "health" then
-		GetHealth = f
-	elseif a == "team" then
-		GetTeam = f
-	elseif a == "teamcolor" then
-		GetTeamColor = f
-	elseif a == "ffa" then
-		IsFFA = f
-	end
+end));
+
+return options;
 end
-function esp:Destroy()
-	if destroyed then return end
-	conn2:Disconnect()
-	conn3:Disconnect()
-	conn4:Disconnect()
-	for _,v in next, PlayerObjects do
-		v:Destroy()
-	end
-	for _,v in next, OBJECTS do
-		--v:Remove()
-	end
-	destroyed = true
+
+function espLibrary:Unload()
+for _, connection in next, self.conns do
+connection:Disconnect();
 end
-getgenv().UESP = esp
-return esp
+
+for _, player in next, players:GetPlayers() do
+self.removeEsp(player);
+self.removeChams(player);
+end
+
+for object, _ in next, self.objectCache do
+self.removeObject(object);
+end
+
+for _, object in next, self.instances do
+object:Destroy();
+end
+
+screenGui:Destroy();
+runService:UnbindFromRenderStep("esp_rendering");
+end
+
+function espLibrary:Load(renderValue)
+insert(self.conns, players.PlayerAdded:Connect(function(player)
+self.addEsp(player);
+self.addChams(player);
+end));
+
+insert(self.conns, players.PlayerRemoving:Connect(function(player)
+self.removeEsp(player);
+self.removeChams(player);
+end));
+
+for _, player in next, players:GetPlayers() do
+self.addEsp(player);
+self.addChams(player);
+end
+
+runService:BindToRenderStep("esp_rendering", renderValue or (Enum.RenderPriority.Camera.Value + 1), function()
+for player, objects in next, self.espCache do
+local character, torso = self.getCharacter(player);
+
+if (character and torso) then
+local onScreen, size, position, torsoPosition = self.getBoxData(torso.Position, Vector3.new(5, 6));
+local distance = (currentCamera.CFrame.Position - torso.Position).Magnitude;
+local canShow, enabled = onScreen and (size and position), self.options.enabled;
+local team, teamColor = self.getTeam(player);
+local color = self.options.teamColor and teamColor or nil;
+
+if (self.options.fillColor ~= nil) then
+color = self.options.fillColor;
+end
+
+if (find(self.whitelist, player.Name)) then
+color = self.options.whitelistColor;
+end
+
+if (find(self.blacklist, player.Name)) then
+enabled = false;
+end
+
+if (self.options.limitDistance and distance > self.options.maxDistance) then
+enabled = false;
+end
+
+if (self.options.visibleOnly and not self.visibleCheck(character, torso.Position)) then
+enabled = false;
+end
+
+if (self.options.teamCheck and (team == self.getTeam(localPlayer))) then
+enabled = false;
+end
+
+local viewportSize = currentCamera.ViewportSize;
+
+local screenCenter = vector2New(viewportSize.X / 2, viewportSize.Y / 2);
+local objectSpacePoint = (pointToObjectSpace(currentCamera.CFrame, torso.Position) * vector3New(1, 0, 1)).Unit;
+local crossVector = cross(objectSpacePoint, vector3New(0, 1, 1));
+local rightVector = vector2New(crossVector.X, crossVector.Z);
+
+local arrowRadius, arrowSize = self.options.outOfViewArrowsRadius, self.options.outOfViewArrowsSize;
+local arrowPosition = screenCenter + vector2New(objectSpacePoint.X, objectSpacePoint.Z) * arrowRadius;
+local arrowDirection = (arrowPosition - screenCenter).Unit;
+
+local pointA, pointB, pointC = arrowPosition, screenCenter + arrowDirection * (arrowRadius - arrowSize) + rightVector * arrowSize, screenCenter + arrowDirection * (arrowRadius - arrowSize) + -rightVector * arrowSize;
+
+local health, maxHealth = self.getHealth(player, character);
+local healthBarSize = round(vector2New(self.options.healthBarsSize, -(size.Y * (health / maxHealth))));
+local healthBarPosition = round(vector2New(position.X - (3 + healthBarSize.X), position.Y + size.Y));
+
+local origin = self.options.tracerOrigin;
+local show = canShow and enabled;
+
+objects.arrow.Visible = (not canShow and enabled) and self.options.outOfViewArrows;
+objects.arrow.Filled = self.options.outOfViewArrowsFilled;
+objects.arrow.Transparency = self.options.outOfViewArrowsTransparency;
+objects.arrow.Color = color or self.options.outOfViewArrowsColor;
+objects.arrow.PointA = pointA;
+objects.arrow.PointB = pointB;
+objects.arrow.PointC = pointC;
+
+objects.arrowOutline.Visible = (not canShow and enabled) and self.options.outOfViewArrowsOutline;
+objects.arrowOutline.Filled = self.options.outOfViewArrowsOutlineFilled;
+objects.arrowOutline.Transparency = self.options.outOfViewArrowsOutlineTransparency;
+objects.arrowOutline.Color = color or self.options.outOfViewArrowsOutlineColor;
+objects.arrowOutline.PointA = pointA;
+objects.arrowOutline.PointB = pointB;
+objects.arrowOutline.PointC = pointC;
+
+objects.top.Visible = show and self.options.names;
+objects.top.Font = self.options.font;
+objects.top.Size = self.options.fontSize;
+objects.top.Transparency = self.options.nameTransparency;
+objects.top.Color = color or self.options.nameColor;
+objects.top.Text = player.Name;
+objects.top.Position = round(position + vector2New(size.X * 0.5, -(objects.top.TextBounds.Y + 2)));
+
+objects.side.Visible = show and self.options.healthText;
+objects.side.Font = self.options.font;
+objects.side.Size = self.options.fontSize;
+objects.side.Transparency = self.options.healthTextTransparency;
+objects.side.Color = color or self.options.healthTextColor;
+objects.side.Text = health .. self.options.healthTextSuffix;
+objects.side.Position = round(position + vector2New(size.X + 3, -3));
+
+objects.bottom.Visible = show and self.options.distance;
+objects.bottom.Font = self.options.font;
+objects.bottom.Size = self.options.fontSize;
+objects.bottom.Transparency = self.options.distanceTransparency;
+objects.bottom.Color = color or self.options.nameColor;
+objects.bottom.Text = tostring(round(distance)) .. self.options.distanceSuffix;
+objects.bottom.Position = round(position + vector2New(size.X * 0.5, size.Y + 1));
+
+objects.box.Visible = show and self.options.boxes;
+objects.box.Color = color or self.options.boxesColor;
+objects.box.Transparency = self.options.boxesTransparency;
+objects.box.Size = size;
+objects.box.Position = position;
+
+objects.boxOutline.Visible = show and self.options.boxes;
+objects.boxOutline.Transparency = self.options.boxesTransparency;
+objects.boxOutline.Size = size;
+objects.boxOutline.Position = position;
+
+objects.boxFill.Visible = show and self.options.boxFill;
+objects.boxFill.Color = color or self.options.boxFillColor;
+objects.boxFill.Transparency = self.options.boxFillTransparency;
+objects.boxFill.Size = size;
+objects.boxFill.Position = position;
+
+objects.healthBar.Visible = show and self.options.healthBars;
+objects.healthBar.Color = color or self.options.healthBarsColor;
+objects.healthBar.Transparency = self.options.healthBarsTransparency;
+objects.healthBar.Size = healthBarSize;
+objects.healthBar.Position = healthBarPosition;
+
+objects.healthBarOutline.Visible = show and self.options.healthBars;
+objects.healthBarOutline.Transparency = self.options.healthBarsTransparency;
+objects.healthBarOutline.Size = round(vector2New(healthBarSize.X, -size.Y) + vector2New(2, -2));
+objects.healthBarOutline.Position = healthBarPosition - vector2New(1, -1);
+
+objects.line.Visible = show and self.options.tracers;
+objects.line.Color = color or self.options.tracerColor;
+objects.line.Transparency = self.options.tracerTransparency;
+objects.line.From =
+origin == "Mouse" and userInputService:GetMouseLocation() or
+origin == "Top" and vector2New(viewportSize.X * 0.5, 0) or
+origin == "Bottom" and vector2New(viewportSize.X * 0.5, viewportSize.Y);
+objects.line.To = torsoPosition;
+else
+for _, object in next, objects do
+object.Visible = false;
+end
+end
+end
+
+for player, highlight in next, self.chamsCache do
+local character, torso = self.getCharacter(player);
+
+if (character and torso) then
+local distance = (currentCamera.CFrame.Position - torso.Position).Magnitude;
+local canShow = self.options.enabled and self.options.chams;
+local team, teamColor = self.getTeam(player);
+local color = self.options.teamColor and teamColor or nil;
+
+if (self.options.fillColor ~= nil) then
+color = self.options.fillColor;
+end
+
+if (find(self.whitelist, player.Name)) then
+color = self.options.whitelistColor;
+end
+
+if (find(self.blacklist, player.Name)) then
+canShow = false;
+end
+
+if (self.options.limitDistance and distance > self.options.maxDistance) then
+canShow = false;
+end
+
+if (self.options.teamCheck and (team == self.getTeam(localPlayer))) then
+canShow = false;
+end
+
+highlight.Enabled = canShow;
+highlight.DepthMode = self.options.visibleOnly and Enum.HighlightDepthMode.Occluded or Enum.HighlightDepthMode.AlwaysOnTop;
+highlight.Adornee = character;
+highlight.FillColor = color or self.options.chamsFillColor;
+highlight.FillTransparency = self.options.chamsFillTransparency;
+highlight.OutlineColor = color or self.options.chamsOutlineColor;
+highlight.OutlineTransparency = self.options.chamsOutlineTransparency;
+end
+end
+
+for object, cache in next, self.objectCache do
+local partPosition = vector3New();
+
+if (object:IsA("BasePart")) then
+partPosition = object.Position;
+elseif (object:IsA("Model")) then
+partPosition = self.getBoundingBox(object);
+end
+
+local distance = (currentCamera.CFrame.Position - partPosition).Magnitude;
+local screenPosition, onScreen = worldToViewportPoint(partPosition);
+local canShow = cache.options.enabled and onScreen;
+
+if (self.options.limitDistance and distance > self.options.maxDistance) then
+canShow = false;
+end
+
+if (self.options.visibleOnly and not self.visibleCheck(object, partPosition)) then
+canShow = false;
+end
+
+cache.text.Visible = canShow;
+cache.text.Font = cache.options.font;
+cache.text.Size = cache.options.fontSize;
+cache.text.Transparency = cache.options.transparency;
+cache.text.Color = cache.options.color;
+cache.text.Text = cache.options.text;
+cache.text.Position = round(screenPosition);
+end
+end);
+end
+
+return espLibrary;
