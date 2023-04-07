@@ -1,698 +1,698 @@
 
-localelect,next,totring,pcall,getgenv,etmetatable,mathfloor,mathab,mathco,mathin,mathrad,wait=elect,next,totring,pcall,getgenv,etmetatable,math.floor,math.ab,math.co,math.in,math.rad,tak.wait
-localWorldToViewportPoint,Vector2new,Vector3new,Vector3zero,CFramenew,Drawingnew,Color3fromRGB=nil,Vector2.new,Vector3.new,Vector3.zero,CFrame.new,Drawing.new,Color3.fromRGB
-ifnotgetgenv().natxyzEPorgetgenv().natxyzEP.WallHackthenreturnend
-localRunervice=game:Getervice("Runervice")
-localUerInputervice=game:Getervice("UerInputervice")
-localPlayer=game:Getervice("Player")
-localLocalPlayer=Player.LocalPlayer
-localCamera=workpace.CurrentCamera
-localerviceConnection={}
-getgenv().natxyzESP.WallHack={
-etting={
-Enabled=fale,
-TeamCheck=fale,
-AliveCheck=true
+local select, next, tostring, pcall, getgenv, setmetatable, mathfloor, mathabs, mathcos, mathsin, mathrad, wait = select, next, tostring, pcall, getgenv, setmetatable, math.floor, math.abs, math.cos, math.sin, math.rad, task.wait
+local WorldToViewportPoint, Vector2new, Vector3new, Vector3zero, CFramenew, Drawingnew, Color3fromRGB = nil, Vector2.new, Vector3.new, Vector3.zero, CFrame.new, Drawing.new, Color3.fromRGB
+if not getgenv().natxyzESP or getgenv().natxyzESP.WallHack then return end
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+local ServiceConnections = {}
+getgenv().natxyzESP.WallHack = {
+Settings = {
+Enabled = false,
+TeamCheck = false,
+AliveCheck = false
 },
-Viual={
-Chametting={
-Enabled=fale,
-Color=Color3fromRGB(255,255,255),
-Tranparency=0.2,
-Thickne=0,
-Filled=true,
-EntireBody=fale--ForR15,keepfaletopreventlag
+Visuals = {
+ChamsSettings = {
+Enabled = false,
+Color = Color3fromRGB(244, 95, 209),
+Transparency = 0,
+Thickness = 0,
+Filled = false,
+EntireBody = true
 },
-EPetting={
-Enabled=true,
-TextColor=Color3fromRGB(255,255,255),
-Textize=14,
-Outline=true,
-OutlineColor=Color3fromRGB(0,0,0),
-TextTranparency=0.7,
-TextFont=Drawing.Font.UI,--UI,ytem,Plex,Monopace
-Offet=20,
-DiplayDitance=true,
-DiplayHealth=true,
-DiplayName=true
+ESPSettings = {
+Enabled = false,
+TextColor = Color3fromRGB(255, 255, 255),
+TextSize = 14,
+Outline = false,
+OutlineColor = Color3fromRGB(0, 0, 0),
+TextTransparency = 1,
+TextFont = Drawing.Fonts.UI,
+Offset = 20,
+DisplayDistance = false,
+DisplayHealth = false,
+DisplayName = false
 },
-Traceretting={
-Enabled=true,
-Type=1,--1-Bottom;2-Center;3-Moue
-Tranparency=0.7,
-Thickne=1,
-Color=Color3fromRGB(255,255,255)
+TracersSettings = {
+Enabled = false,
+Type = 1,
+Transparency = 0,
+Thickness = 0,
+Color =  Color3fromRGB(244, 95, 209)
 },
-Boxetting={
-Enabled=true,
-Type=1;--1-3D;2-2D
-Color=Color3fromRGB(255,255,255),
-Tranparency=0.7,
-Thickne=1,
-Filled=fale,--For2D
-Increae=1--For3D
+BoxSettings = {
+Enabled = false,
+Type = 1;
+Color =  Color3fromRGB(244, 95, 209),
+Transparency = 0,
+Thickness = 1,
+Filled = false,
+Increase = 0
 },
-HeadDotetting={
-Enabled=true,
-Color=Color3fromRGB(255,255,255),
-Tranparency=0.5,
-Thickne=1,
-Filled=fale,
-ide=30
+HeadDotSettings = {
+Enabled = false,
+Color = Color3fromRGB(244, 95, 209),
+Transparency = 0,
+Thickness = 0,
+Filled = false,
+Sides = 0
 },
-HealthBaretting={
-Enabled=fale,
-Tranparency=0.8,
-ize=2,
-Offet=10,
-OutlineColor=Color3fromRGB(0,0,0),
-Blue=50,
-Type=3
+HealthBarSettings = {
+Enabled = false,
+Transparency = 0,
+Size = 0,
+Offset = 0,
+OutlineColor = Color3fromRGB(0, 0, 0),
+Blue = 50,
+Type = 3
 }
 },
-Crohair={
-etting={
-Enabled=fale,
-Type=1,
-ize=12,
-Thickne=1,
-Color=Color3fromRGB(0,255,0),
-Tranparency=1,
-Gapize=5,
-Rotation=0,
-CenterDot=fale,
-CenterDotColor=Color3fromRGB(0,255,0),
-CenterDotize=1,
-CenterDotTranparency=1,
-CenterDotFilled=true,
-CenterDotThickne=1
+Crosshair = {
+Settings = {
+Enabled = false,
+Type = 1,
+Size = 0,
+Thickness = 0,
+Color = Color3fromRGB(244, 95, 209),
+Transparency = 0,
+GapSize = 5,
+Rotation = 0,
+CenterDot = false,
+CenterDotColor = Color3fromRGB(244, 95, 209),
+CenterDotSize = 0,
+CenterDotTransparency = 0,
+CenterDotFilled = false,
+CenterDotThickness = 0
 },
-Part={
-LeftLine=Drawingnew("Line"),
-RightLine=Drawingnew("Line"),
-TopLine=Drawingnew("Line"),
-BottomLine=Drawingnew("Line"),
-CenterDot=Drawingnew("Circle")
+Parts = {
+LeftLine = Drawingnew("Line"),
+RightLine = Drawingnew("Line"),
+TopLine = Drawingnew("Line"),
+BottomLine = Drawingnew("Line"),
+CenterDot = Drawingnew("Circle")
 }
 },
-WrappedPlayer={}
+WrappedPlayers = {}
 }
-localEnvironment=getgenv().natxyzEP.WallHack
-WorldToViewportPoint=function(...)
-returnCamera.WorldToViewportPoint(Camera,...)
+local Environment = getgenv().natxyzESP.WallHack
+WorldToViewportPoint = function(...)
+return Camera.WorldToViewportPoint(Camera, ...)
 end
-localfunctionGetPlayerTable(Player)
-for_,vinnext,Environment.WrappedPlayerdo
-ifv.Name==Player.Namethen
-returnv
-end
-end
-end
-localfunctionAignRigType(Player)
-localPlayerTable=GetPlayerTable(Player)
-repeatwait(0)untilPlayer.Character
-ifPlayer.Character:FindFirtChild("Toro")andnotPlayer.Character:FindFirtChild("LowerToro")then
-PlayerTable.RigType="R6"
-eleifPlayer.Character:FindFirtChild("LowerToro")andnotPlayer.Character:FindFirtChild("Toro")then
-PlayerTable.RigType="R15"
-ele
-repeatAignRigType(Player)untilPlayerTable.RigType
+local function GetPlayerTable(Player)
+for _, v in next, Environment.WrappedPlayers do
+if v.Name == Player.Name then
+return v
 end
 end
-localfunctionInitCheck(Player)
-localPlayerTable=GetPlayerTable(Player)
-PlayerTable.Connection.UpdateCheck=Runervice.Rendertepped:Connect(function()
-ifPlayer.CharacterandPlayer.Character:FindFirtChildOfCla("Humanoid")then
-ifEnvironment.etting.AliveCheckthen
-PlayerTable.Check.Alive=Player.Character:FindFirtChildOfCla("Humanoid").Health>0
-ele
-PlayerTable.Check.Alive=true
 end
-ifEnvironment.etting.TeamCheckthen
-PlayerTable.Check.Team=Player.TeamColor~=LocalPlayer.TeamColor
-ele
-PlayerTable.Check.Team=true
+local function AssignRigType(Player)
+local PlayerTable = GetPlayerTable(Player)
+repeat wait(0) until Player.Character
+if Player.Character:FindFirstChild("Torso") and not Player.Character:FindFirstChild("LowerTorso") then
+PlayerTable.RigType = "R6"
+elseif Player.Character:FindFirstChild("LowerTorso") and not Player.Character:FindFirstChild("Torso") then
+PlayerTable.RigType = "R15"
+else
+repeat AssignRigType(Player) until PlayerTable.RigType
 end
-ele
-PlayerTable.Check.Alive=fale
-PlayerTable.Check.Team=fale
+end
+local function InitChecks(Player)
+local PlayerTable = GetPlayerTable(Player)
+PlayerTable.Connections.UpdateChecks = RunService.RenderStepped:Connect(function()
+if Player.Character and Player.Character:FindFirstChildOfClass("Humanoid") then
+if Environment.Settings.AliveCheck then
+PlayerTable.Checks.Alive = Player.Character:FindFirstChildOfClass("Humanoid").Health > 0
+else
+PlayerTable.Checks.Alive = true
+end
+if Environment.Settings.TeamCheck then
+PlayerTable.Checks.Team = Player.TeamColor ~= LocalPlayer.TeamColor
+else
+PlayerTable.Checks.Team = true
+end
+else
+PlayerTable.Checks.Alive = false
+PlayerTable.Checks.Team = false
 end
 end)
 end
-localfunctionUpdateCham(Part,Cham)
-localCorFrame,Partize=Part.CFrame,Part.ize/2
-ifelect(2,WorldToViewportPoint(CorFrame*CFramenew(Partize.X/2,Partize.Y/2,Partize.Z/2).Poition))andEnvironment.Viual.Chametting.Enabledthen
-Cham.Quad1.Tranparency=Environment.Viual.Chametting.Tranparency
-Cham.Quad1.Color=Environment.Viual.Chametting.Color
-Cham.Quad1.Thickne=Environment.Viual.Chametting.Thickne
-Cham.Quad1.Filled=Environment.Viual.Chametting.Filled
-Cham.Quad1.Viible=Environment.Viual.Chametting.Enabled
-localPoTopLeft=WorldToViewportPoint(CorFrame*CFramenew(Partize.X,Partize.Y,Partize.Z).Poition)
-localPoTopRight=WorldToViewportPoint(CorFrame*CFramenew(-Partize.X,Partize.Y,Partize.Z).Poition)
-localPoBottomLeft=WorldToViewportPoint(CorFrame*CFramenew(Partize.X,-Partize.Y,Partize.Z).Poition)
-localPoBottomRight=WorldToViewportPoint(CorFrame*CFramenew(-Partize.X,-Partize.Y,Partize.Z).Poition)
-Cham.Quad1.PointA=Vector2new(PoTopLeft.X,PoTopLeft.Y)
-Cham.Quad1.PointB=Vector2new(PoBottomLeft.X,PoBottomLeft.Y)
-Cham.Quad1.PointC=Vector2new(PoBottomRight.X,PoBottomRight.Y)
-Cham.Quad1.PointD=Vector2new(PoTopRight.X,PoTopRight.Y)
-Cham.Quad2.Tranparency=Environment.Viual.Chametting.Tranparency
-Cham.Quad2.Color=Environment.Viual.Chametting.Color
-Cham.Quad2.Thickne=Environment.Viual.Chametting.Thickne
-Cham.Quad2.Filled=Environment.Viual.Chametting.Filled
-Cham.Quad2.Viible=Environment.Viual.Chametting.Enabled
-localPoTopLeft2=WorldToViewportPoint(CorFrame*CFramenew(Partize.X,Partize.Y,-Partize.Z).Poition)
-localPoTopRight2=WorldToViewportPoint(CorFrame*CFramenew(-Partize.X,Partize.Y,-Partize.Z).Poition)
-localPoBottomLeft2=WorldToViewportPoint(CorFrame*CFramenew(Partize.X,-Partize.Y,-Partize.Z).Poition)
-localPoBottomRight2=WorldToViewportPoint(CorFrame*CFramenew(-Partize.X,-Partize.Y,-Partize.Z).Poition)
-Cham.Quad2.PointA=Vector2new(PoTopLeft2.X,PoTopLeft2.Y)
-Cham.Quad2.PointB=Vector2new(PoBottomLeft2.X,PoBottomLeft2.Y)
-Cham.Quad2.PointC=Vector2new(PoBottomRight2.X,PoBottomRight2.Y)
-Cham.Quad2.PointD=Vector2new(PoTopRight2.X,PoTopRight2.Y)
-Cham.Quad3.Tranparency=Environment.Viual.Chametting.Tranparency
-Cham.Quad3.Color=Environment.Viual.Chametting.Color
-Cham.Quad3.Thickne=Environment.Viual.Chametting.Thickne
-Cham.Quad3.Filled=Environment.Viual.Chametting.Filled
-Cham.Quad3.Viible=Environment.Viual.Chametting.Enabled
-localPoTopLeft3=WorldToViewportPoint(CorFrame*CFramenew(Partize.X,Partize.Y,Partize.Z).Poition)
-localPoTopRight3=WorldToViewportPoint(CorFrame*CFramenew(-Partize.X,Partize.Y,Partize.Z).Poition)
-localPoBottomLeft3=WorldToViewportPoint(CorFrame*CFramenew(Partize.X,Partize.Y,-Partize.Z).Poition)
-localPoBottomRight3=WorldToViewportPoint(CorFrame*CFramenew(-Partize.X,Partize.Y,-Partize.Z).Poition)
-Cham.Quad3.PointA=Vector2new(PoTopLeft3.X,PoTopLeft3.Y)
-Cham.Quad3.PointB=Vector2new(PoBottomLeft3.X,PoBottomLeft3.Y)
-Cham.Quad3.PointC=Vector2new(PoBottomRight3.X,PoBottomRight3.Y)
-Cham.Quad3.PointD=Vector2new(PoTopRight3.X,PoTopRight3.Y)
-Cham.Quad4.Tranparency=Environment.Viual.Chametting.Tranparency
-Cham.Quad4.Color=Environment.Viual.Chametting.Color
-Cham.Quad4.Thickne=Environment.Viual.Chametting.Thickne
-Cham.Quad4.Filled=Environment.Viual.Chametting.Filled
-Cham.Quad4.Viible=Environment.Viual.Chametting.Enabled
-localPoTopLeft4=WorldToViewportPoint(CorFrame*CFramenew(Partize.X,-Partize.Y,Partize.Z).Poition)
-localPoTopRight4=WorldToViewportPoint(CorFrame*CFramenew(-Partize.X,-Partize.Y,Partize.Z).Poition)
-localPoBottomLeft4=WorldToViewportPoint(CorFrame*CFramenew(Partize.X,-Partize.Y,-Partize.Z).Poition)
-localPoBottomRight4=WorldToViewportPoint(CorFrame*CFramenew(-Partize.X,-Partize.Y,-Partize.Z).Poition)
-Cham.Quad4.PointA=Vector2new(PoTopLeft4.X,PoTopLeft4.Y)
-Cham.Quad4.PointB=Vector2new(PoBottomLeft4.X,PoBottomLeft4.Y)
-Cham.Quad4.PointC=Vector2new(PoBottomRight4.X,PoBottomRight4.Y)
-Cham.Quad4.PointD=Vector2new(PoTopRight4.X,PoTopRight4.Y)
-Cham.Quad5.Tranparency=Environment.Viual.Chametting.Tranparency
-Cham.Quad5.Color=Environment.Viual.Chametting.Color
-Cham.Quad5.Thickne=Environment.Viual.Chametting.Thickne
-Cham.Quad5.Filled=Environment.Viual.Chametting.Filled
-Cham.Quad5.Viible=Environment.Viual.Chametting.Enabled
-localPoTopLeft5=WorldToViewportPoint(CorFrame*CFramenew(Partize.X,Partize.Y,Partize.Z).Poition)
-localPoTopRight5=WorldToViewportPoint(CorFrame*CFramenew(Partize.X,Partize.Y,-Partize.Z).Poition)
-localPoBottomLeft5=WorldToViewportPoint(CorFrame*CFramenew(Partize.X,-Partize.Y,Partize.Z).Poition)
-localPoBottomRight5=WorldToViewportPoint(CorFrame*CFramenew(Partize.X,-Partize.Y,-Partize.Z).Poition)
-Cham.Quad5.PointA=Vector2new(PoTopLeft5.X,PoTopLeft5.Y)
-Cham.Quad5.PointB=Vector2new(PoBottomLeft5.X,PoBottomLeft5.Y)
-Cham.Quad5.PointC=Vector2new(PoBottomRight5.X,PoBottomRight5.Y)
-Cham.Quad5.PointD=Vector2new(PoTopRight5.X,PoTopRight5.Y)
-Cham.Quad6.Tranparency=Environment.Viual.Chametting.Tranparency
-Cham.Quad6.Color=Environment.Viual.Chametting.Color
-Cham.Quad6.Thickne=Environment.Viual.Chametting.Thickne
-Cham.Quad6.Filled=Environment.Viual.Chametting.Filled
-Cham.Quad6.Viible=Environment.Viual.Chametting.Enabled
-localPoTopLeft6=WorldToViewportPoint(CorFrame*CFramenew(-Partize.X,Partize.Y,Partize.Z).Poition)
-localPoTopRight6=WorldToViewportPoint(CorFrame*CFramenew(-Partize.X,Partize.Y,-Partize.Z).Poition)
-localPoBottomLeft6=WorldToViewportPoint(CorFrame*CFramenew(-Partize.X,-Partize.Y,Partize.Z).Poition)
-localPoBottomRight6=WorldToViewportPoint(CorFrame*CFramenew(-Partize.X,-Partize.Y,-Partize.Z).Poition)
-Cham.Quad6.PointA=Vector2new(PoTopLeft6.X,PoTopLeft6.Y)
-Cham.Quad6.PointB=Vector2new(PoBottomLeft6.X,PoBottomLeft6.Y)
-Cham.Quad6.PointC=Vector2new(PoBottomRight6.X,PoBottomRight6.Y)
-Cham.Quad6.PointD=Vector2new(PoTopRight6.X,PoTopRight6.Y)
-ele
-fori=1,6do
-Cham["Quad"..totring(i)].Viible=fale
+local function UpdateCham(Part, Cham)
+local CorFrame, PartSize = Part.CFrame, Part.Size / 2
+if select(2, WorldToViewportPoint(CorFrame * CFramenew(PartSize.X / 2,  PartSize.Y / 2, PartSize.Z / 2).Position)) and Environment.Visuals.ChamsSettings.Enabled then
+Cham.Quad1.Transparency = Environment.Visuals.ChamsSettings.Transparency
+Cham.Quad1.Color = Environment.Visuals.ChamsSettings.Color
+Cham.Quad1.Thickness = Environment.Visuals.ChamsSettings.Thickness
+Cham.Quad1.Filled = Environment.Visuals.ChamsSettings.Filled
+Cham.Quad1.Visible = Environment.Visuals.ChamsSettings.Enabled
+local PosTopLeft = WorldToViewportPoint(CorFrame * CFramenew(PartSize.X,  PartSize.Y, PartSize.Z).Position)
+local PosTopRight = WorldToViewportPoint(CorFrame * CFramenew(-PartSize.X,  PartSize.Y, PartSize.Z).Position)
+local PosBottomLeft = WorldToViewportPoint(CorFrame * CFramenew(PartSize.X, -PartSize.Y, PartSize.Z).Position)
+local PosBottomRight = WorldToViewportPoint(CorFrame * CFramenew(-PartSize.X, -PartSize.Y, PartSize.Z).Position)
+Cham.Quad1.PointA = Vector2new(PosTopLeft.X, PosTopLeft.Y)
+Cham.Quad1.PointB = Vector2new(PosBottomLeft.X, PosBottomLeft.Y)
+Cham.Quad1.PointC = Vector2new(PosBottomRight.X, PosBottomRight.Y)
+Cham.Quad1.PointD = Vector2new(PosTopRight.X, PosTopRight.Y)
+Cham.Quad2.Transparency = Environment.Visuals.ChamsSettings.Transparency
+Cham.Quad2.Color = Environment.Visuals.ChamsSettings.Color
+Cham.Quad2.Thickness = Environment.Visuals.ChamsSettings.Thickness
+Cham.Quad2.Filled = Environment.Visuals.ChamsSettings.Filled
+Cham.Quad2.Visible = Environment.Visuals.ChamsSettings.Enabled
+local PosTopLeft2 = WorldToViewportPoint(CorFrame * CFramenew(PartSize.X,  PartSize.Y, -PartSize.Z).Position)
+local PosTopRight2 = WorldToViewportPoint(CorFrame * CFramenew(-PartSize.X,  PartSize.Y, -PartSize.Z).Position)
+local PosBottomLeft2 = WorldToViewportPoint(CorFrame * CFramenew(PartSize.X, -PartSize.Y, -PartSize.Z).Position)
+local PosBottomRight2 = WorldToViewportPoint(CorFrame * CFramenew(-PartSize.X, -PartSize.Y, -PartSize.Z).Position)
+Cham.Quad2.PointA = Vector2new(PosTopLeft2.X, PosTopLeft2.Y)
+Cham.Quad2.PointB = Vector2new(PosBottomLeft2.X, PosBottomLeft2.Y)
+Cham.Quad2.PointC = Vector2new(PosBottomRight2.X, PosBottomRight2.Y)
+Cham.Quad2.PointD = Vector2new(PosTopRight2.X, PosTopRight2.Y)
+Cham.Quad3.Transparency = Environment.Visuals.ChamsSettings.Transparency
+Cham.Quad3.Color = Environment.Visuals.ChamsSettings.Color
+Cham.Quad3.Thickness = Environment.Visuals.ChamsSettings.Thickness
+Cham.Quad3.Filled = Environment.Visuals.ChamsSettings.Filled
+Cham.Quad3.Visible = Environment.Visuals.ChamsSettings.Enabled
+local PosTopLeft3 = WorldToViewportPoint(CorFrame * CFramenew(PartSize.X,  PartSize.Y, PartSize.Z).Position)
+local PosTopRight3 = WorldToViewportPoint(CorFrame * CFramenew(-PartSize.X, PartSize.Y, PartSize.Z).Position)
+local PosBottomLeft3 = WorldToViewportPoint(CorFrame * CFramenew(PartSize.X, PartSize.Y, -PartSize.Z).Position)
+local PosBottomRight3 = WorldToViewportPoint(CorFrame * CFramenew(-PartSize.X, PartSize.Y, -PartSize.Z).Position)
+Cham.Quad3.PointA = Vector2new(PosTopLeft3.X, PosTopLeft3.Y)
+Cham.Quad3.PointB = Vector2new(PosBottomLeft3.X, PosBottomLeft3.Y)
+Cham.Quad3.PointC = Vector2new(PosBottomRight3.X, PosBottomRight3.Y)
+Cham.Quad3.PointD = Vector2new(PosTopRight3.X, PosTopRight3.Y)
+Cham.Quad4.Transparency = Environment.Visuals.ChamsSettings.Transparency
+Cham.Quad4.Color = Environment.Visuals.ChamsSettings.Color
+Cham.Quad4.Thickness = Environment.Visuals.ChamsSettings.Thickness
+Cham.Quad4.Filled = Environment.Visuals.ChamsSettings.Filled
+Cham.Quad4.Visible = Environment.Visuals.ChamsSettings.Enabled
+local PosTopLeft4 = WorldToViewportPoint(CorFrame * CFramenew(PartSize.X,  -PartSize.Y, PartSize.Z).Position)
+local PosTopRight4 = WorldToViewportPoint(CorFrame * CFramenew(-PartSize.X, -PartSize.Y, PartSize.Z).Position)
+local PosBottomLeft4 = WorldToViewportPoint(CorFrame * CFramenew(PartSize.X, -PartSize.Y, -PartSize.Z).Position)
+local PosBottomRight4 = WorldToViewportPoint(CorFrame * CFramenew(-PartSize.X, -PartSize.Y, -PartSize.Z).Position)
+Cham.Quad4.PointA = Vector2new(PosTopLeft4.X, PosTopLeft4.Y)
+Cham.Quad4.PointB = Vector2new(PosBottomLeft4.X, PosBottomLeft4.Y)
+Cham.Quad4.PointC = Vector2new(PosBottomRight4.X, PosBottomRight4.Y)
+Cham.Quad4.PointD = Vector2new(PosTopRight4.X, PosTopRight4.Y)
+Cham.Quad5.Transparency = Environment.Visuals.ChamsSettings.Transparency
+Cham.Quad5.Color = Environment.Visuals.ChamsSettings.Color
+Cham.Quad5.Thickness = Environment.Visuals.ChamsSettings.Thickness
+Cham.Quad5.Filled = Environment.Visuals.ChamsSettings.Filled
+Cham.Quad5.Visible = Environment.Visuals.ChamsSettings.Enabled
+local PosTopLeft5 = WorldToViewportPoint(CorFrame * CFramenew(PartSize.X,  PartSize.Y, PartSize.Z).Position)
+local PosTopRight5 = WorldToViewportPoint(CorFrame * CFramenew(PartSize.X, PartSize.Y, -PartSize.Z).Position)
+local PosBottomLeft5 = WorldToViewportPoint(CorFrame * CFramenew(PartSize.X, -PartSize.Y, PartSize.Z).Position)
+local PosBottomRight5 = WorldToViewportPoint(CorFrame * CFramenew(PartSize.X, -PartSize.Y, -PartSize.Z).Position)
+Cham.Quad5.PointA = Vector2new(PosTopLeft5.X, PosTopLeft5.Y)
+Cham.Quad5.PointB = Vector2new(PosBottomLeft5.X, PosBottomLeft5.Y)
+Cham.Quad5.PointC = Vector2new(PosBottomRight5.X, PosBottomRight5.Y)
+Cham.Quad5.PointD = Vector2new(PosTopRight5.X, PosTopRight5.Y)
+Cham.Quad6.Transparency = Environment.Visuals.ChamsSettings.Transparency
+Cham.Quad6.Color = Environment.Visuals.ChamsSettings.Color
+Cham.Quad6.Thickness = Environment.Visuals.ChamsSettings.Thickness
+Cham.Quad6.Filled = Environment.Visuals.ChamsSettings.Filled
+Cham.Quad6.Visible = Environment.Visuals.ChamsSettings.Enabled
+local PosTopLeft6 = WorldToViewportPoint(CorFrame * CFramenew(-PartSize.X,  PartSize.Y, PartSize.Z).Position)
+local PosTopRight6 = WorldToViewportPoint(CorFrame * CFramenew(-PartSize.X, PartSize.Y, -PartSize.Z).Position)
+local PosBottomLeft6 = WorldToViewportPoint(CorFrame * CFramenew(-PartSize.X, -PartSize.Y, PartSize.Z).Position)
+local PosBottomRight6 = WorldToViewportPoint(CorFrame * CFramenew(-PartSize.X, -PartSize.Y, -PartSize.Z).Position)
+Cham.Quad6.PointA = Vector2new(PosTopLeft6.X, PosTopLeft6.Y)
+Cham.Quad6.PointB = Vector2new(PosBottomLeft6.X, PosBottomLeft6.Y)
+Cham.Quad6.PointC = Vector2new(PosBottomRight6.X, PosBottomRight6.Y)
+Cham.Quad6.PointD = Vector2new(PosTopRight6.X, PosTopRight6.Y)
+else
+for i = 1, 6 do
+Cham["Quad"..tostring(i)].Visible = false
 end
 end
 end
-localViual={
-AddCham=function(Player)
-localPlayerTable=GetPlayerTable(Player)
-localfunctionUpdateRig()
-for_,vinnext,PlayerTable.Chamdo
-fori=1,6do
-localQuad=v["Quad"..totring(i)]
+local Visuals = {
+AddChams = function(Player)
+local PlayerTable = GetPlayerTable(Player)
+local function UpdateRig()
+for _, v in next, PlayerTable.Chams do
+for i = 1, 6 do
+local Quad = v["Quad"..tostring(i)]
 
-ifQuadandQuad.Removethen
+if Quad and Quad.Remove then
 Quad:Remove()
 end
 end
 end
-ifPlayerTable.RigType=="R15"then
-ifnotEnvironment.Viual.Chametting.EntireBodythen
-PlayerTable.Cham={
-Head={},
-UpperToro={},
-LeftLowerArm={},LeftUpperArm={},
-RightLowerArm={},RightUpperArm={},
-LeftLowerLeg={},LeftUpperLeg={},
-RightLowerLeg={},RightUpperLeg={}
+if PlayerTable.RigType == "R15" then
+if not Environment.Visuals.ChamsSettings.EntireBody then
+PlayerTable.Chams = {
+Head = {},
+UpperTorso = {},
+LeftLowerArm = {}, LeftUpperArm = {},
+RightLowerArm = {}, RightUpperArm = {},
+LeftLowerLeg = {}, LeftUpperLeg = {},
+RightLowerLeg = {}, RightUpperLeg = {}
 }
-ele
-PlayerTable.Cham={
-Head={},
-UpperToro={},LowerToro={},
-LeftLowerArm={},LeftUpperArm={},LeftHand={},
-RightLowerArm={},RightUpperArm={},RightHand={},
-LeftLowerLeg={},LeftUpperLeg={},LeftFoot={},
-RightLowerLeg={},RightUpperLeg={},RightFoot={}
-}
-end
-eleifPlayerTable.RigType=="R6"then
-PlayerTable.Cham={
-Head={},
-Toro={},
-["LeftArm"]={},
-["RightArm"]={},
-["LeftLeg"]={},
-["RightLeg"]={}
+else
+PlayerTable.Chams = {
+Head = {},
+UpperTorso = {}, LowerTorso = {},
+LeftLowerArm = {}, LeftUpperArm = {}, LeftHand = {},
+RightLowerArm = {}, RightUpperArm = {}, RightHand = {},
+LeftLowerLeg = {}, LeftUpperLeg = {}, LeftFoot = {},
+RightLowerLeg = {}, RightUpperLeg = {}, RightFoot = {}
 }
 end
-for_,vinnext,PlayerTable.Chamdo
-fori=1,6do
-v["Quad"..totring(i)]=Drawingnew("Quad")
+elseif PlayerTable.RigType == "R6" then
+PlayerTable.Chams = {
+Head = {},
+Torso = {},
+["Left Arm"] = {},
+["Right Arm"] = {},
+["Left Leg"] = {},
+["Right Leg"] = {}
+}
+end
+for _, v in next, PlayerTable.Chams do
+for i = 1, 6 do
+v["Quad"..tostring(i)] = Drawingnew("Quad")
 end
 end
 end
-localOldEntireBody=Environment.Viual.Chametting.EntireBody
-UpdateRig();PlayerTable.Connection.Cham=Runervice.Rendertepped:Connect(function()
-fori,vinnext,PlayerTable.Chamdo
-UpdateCham(Player.Character:WaitForChild(i,1/0),v)
+local OldEntireBody = Environment.Visuals.ChamsSettings.EntireBody
+UpdateRig(); PlayerTable.Connections.Chams = RunService.RenderStepped:Connect(function()
+for i, v in next, PlayerTable.Chams do
+UpdateCham(Player.Character:WaitForChild(i, 1 / 0), v)
 end
-ifEnvironment.Viual.Chametting.Enabledthen
-ifEnvironment.Viual.Chametting.EntireBody~=OldEntireBodythen
-UpdateRig();OldEntireBody=Environment.Viual.Chametting.EntireBody
+if Environment.Visuals.ChamsSettings.Enabled then
+if Environment.Visuals.ChamsSettings.EntireBody ~= OldEntireBody then
+UpdateRig(); OldEntireBody = Environment.Visuals.ChamsSettings.EntireBody
 end
 end
 end)
 end,
-AddEP=function(Player)
-localPlayerTable=GetPlayerTable(Player)
-PlayerTable.EP=Drawingnew("Text")
-PlayerTable.Connection.EP=Runervice.Rendertepped:Connect(function()
-ifPlayer.CharacterandPlayer.Character:FindFirtChildOfCla("Humanoid")andPlayer.Character:FindFirtChild("HumanoidRootPart")andPlayer.Character:FindFirtChild("Head")andEnvironment.etting.Enabledthen
-localVector,Oncreen=WorldToViewportPoint(Player.Character.Head.Poition)
-PlayerTable.EP.Viible=Environment.Viual.EPetting.Enabled
-ifOncreenandEnvironment.Viual.EPetting.Enabledthen
-PlayerTable.EP.Viible=PlayerTable.Check.AliveandPlayerTable.Check.Teamandtrueorfale
-ifPlayerTable.EP.Viiblethen
-PlayerTable.EP.Center=true
-PlayerTable.EP.ize=Environment.Viual.EPetting.Textize
-PlayerTable.EP.Outline=Environment.Viual.EPetting.Outline
-PlayerTable.EP.OutlineColor=Environment.Viual.EPetting.OutlineColor
-PlayerTable.EP.Color=Environment.Viual.EPetting.TextColor
-PlayerTable.EP.Tranparency=Environment.Viual.EPetting.TextTranparency
-PlayerTable.EP.Font=Environment.Viual.EPetting.TextFont
-localPart,Content,Tool={
-Health="("..totring(mathfloor(Player.Character.Humanoid.Health))..")",
-Ditance="["..totring(mathfloor((Player.Character.HumanoidRootPart.PoitionorVector3zero-(LocalPlayer.Character.HumanoidRootPart.PoitionorVector3zero)).Magnitude)).."]",
-Name=Player.DiplayName==Player.NameandPlayer.NameorPlayer.DiplayName.."{"..Player.Name.."}"
-},"",Player.Character:FindFirtChildOfCla("Tool")
-ifEnvironment.Viual.EPetting.DiplayNamethen
-Content=Part.Name..Content
+AddESP = function(Player)
+local PlayerTable = GetPlayerTable(Player)
+PlayerTable.ESP = Drawingnew("Text")
+PlayerTable.Connections.ESP = RunService.RenderStepped:Connect(function()
+if Player.Character and Player.Character:FindFirstChildOfClass("Humanoid") and Player.Character:FindFirstChild("HumanoidRootPart") and Player.Character:FindFirstChild("Head") and Environment.Settings.Enabled then
+local Vector, OnScreen = WorldToViewportPoint(Player.Character.Head.Position)
+PlayerTable.ESP.Visible = Environment.Visuals.ESPSettings.Enabled
+if OnScreen and Environment.Visuals.ESPSettings.Enabled then
+PlayerTable.ESP.Visible = PlayerTable.Checks.Alive and PlayerTable.Checks.Team and true or false
+if PlayerTable.ESP.Visible then
+PlayerTable.ESP.Center = true
+PlayerTable.ESP.Size = Environment.Visuals.ESPSettings.TextSize
+PlayerTable.ESP.Outline = Environment.Visuals.ESPSettings.Outline
+PlayerTable.ESP.OutlineColor = Environment.Visuals.ESPSettings.OutlineColor
+PlayerTable.ESP.Color = Environment.Visuals.ESPSettings.TextColor
+PlayerTable.ESP.Transparency = Environment.Visuals.ESPSettings.TextTransparency
+PlayerTable.ESP.Font = Environment.Visuals.ESPSettings.TextFont
+local Parts, Content, Tool = {
+Health = "("..tostring(mathfloor(Player.Character.Humanoid.Health))..")",
+Distance = "["..tostring(mathfloor((Player.Character.HumanoidRootPart.Position or Vector3zero - (LocalPlayer.Character.HumanoidRootPart.Position or Vector3zero)).Magnitude)).."]",
+Name = Player.DisplayName == Player.Name and Player.Name or Player.DisplayName.." {"..Player.Name.."}"
+}, "", Player.Character:FindFirstChildOfClass("Tool")
+if Environment.Visuals.ESPSettings.DisplayName then
+Content = Parts.Name..Content
 end
-ifEnvironment.Viual.EPetting.DiplayHealththen
-Content=Part.Health..(Environment.Viual.EPetting.DiplayNameand""or"")..Content
+if Environment.Visuals.ESPSettings.DisplayHealth then
+Content = Parts.Health..(Environment.Visuals.ESPSettings.DisplayName and " " or "")..Content
 end
-ifEnvironment.Viual.EPetting.DiplayDitancethen
-Content=Content..""..Part.Ditance
+if Environment.Visuals.ESPSettings.DisplayDistance then
+Content = Content.." "..Parts.Distance
 end
-PlayerTable.EP.Text=(Tooland"["..Tool.Name.."]\n"or"")..Content
-PlayerTable.EP.Poition=Vector2new(Vector.X,Vector.Y-Environment.Viual.EPetting.Offet-(Tooland10or0))
+PlayerTable.ESP.Text = (Tool and "["..Tool.Name.."]\n" or "")..Content
+PlayerTable.ESP.Position = Vector2new(Vector.X, Vector.Y - Environment.Visuals.ESPSettings.Offset - (Tool and 10 or 0))
 end
-ele
-PlayerTable.EP.Viible=fale
+else
+PlayerTable.ESP.Visible = false
 end
-ele
-PlayerTable.EP.Viible=fale
-end
-end)
-end,
-AddTracer=function(Player)
-localPlayerTable=GetPlayerTable(Player)
-PlayerTable.Tracer=Drawingnew("Line")
-PlayerTable.Connection.Tracer=Runervice.Rendertepped:Connect(function()
-ifPlayer.CharacterandPlayer.Character:FindFirtChildOfCla("Humanoid")andPlayer.Character:FindFirtChild("HumanoidRootPart")andPlayer.Character:FindFirtChild("Head")andEnvironment.etting.Enabledthen
-localHRPCFrame,HRPize=Player.Character.HumanoidRootPart.CFrame,Player.Character.HumanoidRootPart.ize
-local_3DVector,Oncreen=WorldToViewportPoint(HRPCFrame*CFramenew(0,-HRPize.Y-0.5,0).Poition)
-local_2DVector=WorldToViewportPoint(Player.Character.HumanoidRootPart.Poition)
-localHeadOffet=WorldToViewportPoint(Player.Character.Head.Poition+Vector3new(0,0.5,0))
-localLegOffet=WorldToViewportPoint(Player.Character.HumanoidRootPart.Poition-Vector3new(0,1.5,0))
-ifOncreenandEnvironment.Viual.Traceretting.Enabledthen
-ifEnvironment.Viual.Traceretting.Enabledthen
-PlayerTable.Tracer.Viible=PlayerTable.Check.AliveandPlayerTable.Check.Teamandtrueorfale
-ifPlayerTable.Tracer.Viiblethen
-PlayerTable.Tracer.Thickne=Environment.Viual.Traceretting.Thickne
-PlayerTable.Tracer.Color=Environment.Viual.Traceretting.Color
-PlayerTable.Tracer.Tranparency=Environment.Viual.Traceretting.Tranparency
-PlayerTable.Tracer.To=Environment.Viual.Boxetting.Type==1andVector2new(_3DVector.X,_3DVector.Y)orVector2new(_2DVector.X,_2DVector.Y-(HeadOffet.Y-LegOffet.Y)*0.75)
-ifEnvironment.Viual.Traceretting.Type==1then
-PlayerTable.Tracer.From=Vector2new(Camera.Viewportize.X/2,Camera.Viewportize.Y)
-eleifEnvironment.Viual.Traceretting.Type==2then
-PlayerTable.Tracer.From=Vector2new(Camera.Viewportize.X/2,Camera.Viewportize.Y/2)
-eleifEnvironment.Viual.Traceretting.Type==3then
-PlayerTable.Tracer.From=Vector2new(UerInputervice:GetMoueLocation().X,UerInputervice:GetMoueLocation().Y)
-ele
-PlayerTable.Tracer.From=Vector2new(Camera.Viewportize.X/2,Camera.Viewportize.Y)
-end
-end
-end
-ele
-PlayerTable.Tracer.Viible=fale
-end
-ele
-PlayerTable.Tracer.Viible=fale
+else
+PlayerTable.ESP.Visible = false
 end
 end)
 end,
-AddBox=function(Player)
-localPlayerTable=GetPlayerTable(Player)
-PlayerTable.Box.quare=Drawingnew("quare")
-PlayerTable.Box.TopLeftLine=Drawingnew("Line")
-PlayerTable.Box.TopLeftLine=Drawingnew("Line")
-PlayerTable.Box.TopRightLine=Drawingnew("Line")
-PlayerTable.Box.BottomLeftLine=Drawingnew("Line")
-PlayerTable.Box.BottomRightLine=Drawingnew("Line")
-localfunctionViibility(Bool)
-ifEnvironment.Viual.Boxetting.Type==1then
-PlayerTable.Box.quare.Viible=notBool
-PlayerTable.Box.TopLeftLine.Viible=Bool
-PlayerTable.Box.TopRightLine.Viible=Bool
-PlayerTable.Box.BottomLeftLine.Viible=Bool
-PlayerTable.Box.BottomRightLine.Viible=Bool
-eleifEnvironment.Viual.Boxetting.Type==2then
-PlayerTable.Box.quare.Viible=Bool
-PlayerTable.Box.TopLeftLine.Viible=notBool
-PlayerTable.Box.TopRightLine.Viible=notBool
-PlayerTable.Box.BottomLeftLine.Viible=notBool
-PlayerTable.Box.BottomRightLine.Viible=notBool
+AddTracer = function(Player)
+local PlayerTable = GetPlayerTable(Player)
+PlayerTable.Tracer = Drawingnew("Line")
+PlayerTable.Connections.Tracer = RunService.RenderStepped:Connect(function()
+if Player.Character and Player.Character:FindFirstChildOfClass("Humanoid") and Player.Character:FindFirstChild("HumanoidRootPart") and Player.Character:FindFirstChild("Head") and Environment.Settings.Enabled then
+local HRPCFrame, HRPSize = Player.Character.HumanoidRootPart.CFrame, Player.Character.HumanoidRootPart.Size
+local _3DVector, OnScreen = WorldToViewportPoint(HRPCFrame * CFramenew(0, -HRPSize.Y - 0.5, 0).Position)
+local _2DVector = WorldToViewportPoint(Player.Character.HumanoidRootPart.Position)
+local HeadOffset = WorldToViewportPoint(Player.Character.Head.Position + Vector3new(0, 0.5, 0))
+local LegsOffset = WorldToViewportPoint(Player.Character.HumanoidRootPart.Position - Vector3new(0, 1.5, 0))
+if OnScreen and Environment.Visuals.TracersSettings.Enabled then
+if Environment.Visuals.TracersSettings.Enabled then
+PlayerTable.Tracer.Visible = PlayerTable.Checks.Alive and PlayerTable.Checks.Team and true or false
+if PlayerTable.Tracer.Visible then
+PlayerTable.Tracer.Thickness = Environment.Visuals.TracersSettings.Thickness
+PlayerTable.Tracer.Color = Environment.Visuals.TracersSettings.Color
+PlayerTable.Tracer.Transparency = Environment.Visuals.TracersSettings.Transparency
+PlayerTable.Tracer.To = Environment.Visuals.BoxSettings.Type == 1 and Vector2new(_3DVector.X, _3DVector.Y) or Vector2new(_2DVector.X, _2DVector.Y - (HeadOffset.Y - LegsOffset.Y) * 0.75)
+if Environment.Visuals.TracersSettings.Type == 1 then
+PlayerTable.Tracer.From = Vector2new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+elseif Environment.Visuals.TracersSettings.Type == 2 then
+PlayerTable.Tracer.From = Vector2new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+elseif Environment.Visuals.TracersSettings.Type == 3 then
+PlayerTable.Tracer.From = Vector2new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y)
+else
+PlayerTable.Tracer.From = Vector2new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
 end
 end
-localfunctionViibility2(Bool)
-PlayerTable.Box.quare.Viible=Bool
-PlayerTable.Box.TopLeftLine.Viible=Bool
-PlayerTable.Box.TopRightLine.Viible=Bool
-PlayerTable.Box.BottomLeftLine.Viible=Bool
-PlayerTable.Box.BottomRightLine.Viible=Bool
 end
-PlayerTable.Connection.Box=Runervice.Rendertepped:Connect(function()
-ifPlayer.CharacterandPlayer.Character:FindFirtChildOfCla("Humanoid")andPlayer.Character:FindFirtChild("HumanoidRootPart")andPlayer.Character:FindFirtChild("Head")andEnvironment.etting.Enabledthen
-localVector,Oncreen=WorldToViewportPoint(Player.Character.HumanoidRootPart.Poition)
-Viibility(Environment.Viual.Boxetting.Enabled)
-ifOncreenandEnvironment.Viual.Boxetting.Enabledthen
-ifPlayerTable.Check.AliveandPlayerTable.Check.Teamthen
-Viibility(true)
-ele
-Viibility2(fale)
+else
+PlayerTable.Tracer.Visible = false
 end
-localHRPCFrame,HRPize=Player.Character.HumanoidRootPart.CFrame,Player.Character.HumanoidRootPart.ize*Environment.Viual.Boxetting.Increae
-localHeadOffet=WorldToViewportPoint(Player.Character.Head.Poition+Vector3new(0,0.5,0))
-localLegOffet=WorldToViewportPoint(Player.Character.HumanoidRootPart.Poition-Vector3new(0,3,0))
-localTopLeftPoition=WorldToViewportPoint(HRPCFrame*CFramenew(HRPize.X,HRPize.Y,0).Poition)
-localTopRightPoition=WorldToViewportPoint(HRPCFrame*CFramenew(-HRPize.X,HRPize.Y,0).Poition)
-localBottomLeftPoition=WorldToViewportPoint(HRPCFrame*CFramenew(HRPize.X,-HRPize.Y-0.5,0).Poition)
-localBottomRightPoition=WorldToViewportPoint(HRPCFrame*CFramenew(-HRPize.X,-HRPize.Y-0.5,0).Poition)
-ifPlayerTable.Box.quare.ViibleandnotPlayerTable.Box.TopLeftLine.ViibleandnotPlayerTable.Box.TopRightLine.ViibleandnotPlayerTable.Box.BottomLeftLine.ViibleandnotPlayerTable.Box.BottomRightLine.Viiblethen
-PlayerTable.Box.quare.Thickne=Environment.Viual.Boxetting.Thickne
-PlayerTable.Box.quare.Color=Environment.Viual.Boxetting.Color
-PlayerTable.Box.quare.Tranparency=Environment.Viual.Boxetting.Tranparency
-PlayerTable.Box.quare.Filled=Environment.Viual.Boxetting.Filled
-PlayerTable.Box.quare.ize=Vector2new(2000/Vector.Z,HeadOffet.Y-LegOffet.Y)
-PlayerTable.Box.quare.Poition=Vector2new(Vector.X-PlayerTable.Box.quare.ize.X/2,Vector.Y-PlayerTable.Box.quare.ize.Y/2)
-eleifnotPlayerTable.Box.quare.ViibleandPlayerTable.Box.TopLeftLine.ViibleandPlayerTable.Box.TopRightLine.ViibleandPlayerTable.Box.BottomLeftLine.ViibleandPlayerTable.Box.BottomRightLine.Viiblethen
-PlayerTable.Box.TopLeftLine.Thickne=Environment.Viual.Boxetting.Thickne
-PlayerTable.Box.TopLeftLine.Tranparency=Environment.Viual.Boxetting.Tranparency
-PlayerTable.Box.TopLeftLine.Color=Environment.Viual.Boxetting.Color
-PlayerTable.Box.TopRightLine.Thickne=Environment.Viual.Boxetting.Thickne
-PlayerTable.Box.TopRightLine.Tranparency=Environment.Viual.Boxetting.Tranparency
-PlayerTable.Box.TopRightLine.Color=Environment.Viual.Boxetting.Color
-PlayerTable.Box.BottomLeftLine.Thickne=Environment.Viual.Boxetting.Thickne
-PlayerTable.Box.BottomLeftLine.Tranparency=Environment.Viual.Boxetting.Tranparency
-PlayerTable.Box.BottomLeftLine.Color=Environment.Viual.Boxetting.Color
-PlayerTable.Box.BottomRightLine.Thickne=Environment.Viual.Boxetting.Thickne
-PlayerTable.Box.BottomRightLine.Tranparency=Environment.Viual.Boxetting.Tranparency
-PlayerTable.Box.BottomRightLine.Color=Environment.Viual.Boxetting.Color
-PlayerTable.Box.TopLeftLine.From=Vector2new(TopLeftPoition.X,TopLeftPoition.Y)
-PlayerTable.Box.TopLeftLine.To=Vector2new(TopRightPoition.X,TopRightPoition.Y)
-PlayerTable.Box.TopRightLine.From=Vector2new(TopRightPoition.X,TopRightPoition.Y)
-PlayerTable.Box.TopRightLine.To=Vector2new(BottomRightPoition.X,BottomRightPoition.Y)
-PlayerTable.Box.BottomLeftLine.From=Vector2new(BottomLeftPoition.X,BottomLeftPoition.Y)
-PlayerTable.Box.BottomLeftLine.To=Vector2new(TopLeftPoition.X,TopLeftPoition.Y)
-PlayerTable.Box.BottomRightLine.From=Vector2new(BottomRightPoition.X,BottomRightPoition.Y)
-PlayerTable.Box.BottomRightLine.To=Vector2new(BottomLeftPoition.X,BottomLeftPoition.Y)
+else
+PlayerTable.Tracer.Visible = false
 end
-ele
-Viibility2(fale)
+end)
+end,
+AddBox = function(Player)
+local PlayerTable = GetPlayerTable(Player)
+PlayerTable.Box.Square = Drawingnew("Square")
+PlayerTable.Box.TopLeftLine = Drawingnew("Line")
+PlayerTable.Box.TopLeftLine = Drawingnew("Line")
+PlayerTable.Box.TopRightLine = Drawingnew("Line")
+PlayerTable.Box.BottomLeftLine = Drawingnew("Line")
+PlayerTable.Box.BottomRightLine = Drawingnew("Line")
+local function Visibility(Bool)
+if Environment.Visuals.BoxSettings.Type == 1 then
+PlayerTable.Box.Square.Visible = not Bool
+PlayerTable.Box.TopLeftLine.Visible = Bool
+PlayerTable.Box.TopRightLine.Visible = Bool
+PlayerTable.Box.BottomLeftLine.Visible = Bool
+PlayerTable.Box.BottomRightLine.Visible = Bool
+elseif Environment.Visuals.BoxSettings.Type == 2 then
+PlayerTable.Box.Square.Visible = Bool
+PlayerTable.Box.TopLeftLine.Visible = not Bool
+PlayerTable.Box.TopRightLine.Visible = not Bool
+PlayerTable.Box.BottomLeftLine.Visible = not Bool
+PlayerTable.Box.BottomRightLine.Visible = not Bool
 end
-ele
-Viibility2(fale)
+end
+local function Visibility2(Bool)
+PlayerTable.Box.Square.Visible = Bool
+PlayerTable.Box.TopLeftLine.Visible = Bool
+PlayerTable.Box.TopRightLine.Visible = Bool
+PlayerTable.Box.BottomLeftLine.Visible = Bool
+PlayerTable.Box.BottomRightLine.Visible = Bool
+end
+PlayerTable.Connections.Box = RunService.RenderStepped:Connect(function()
+if Player.Character and Player.Character:FindFirstChildOfClass("Humanoid") and Player.Character:FindFirstChild("HumanoidRootPart") and Player.Character:FindFirstChild("Head") and Environment.Settings.Enabled then
+local Vector, OnScreen = WorldToViewportPoint(Player.Character.HumanoidRootPart.Position)
+Visibility(Environment.Visuals.BoxSettings.Enabled)
+if OnScreen and Environment.Visuals.BoxSettings.Enabled then
+if PlayerTable.Checks.Alive and PlayerTable.Checks.Team then
+Visibility(true)
+else
+Visibility2(false)
+end
+local HRPCFrame, HRPSize = Player.Character.HumanoidRootPart.CFrame, Player.Character.HumanoidRootPart.Size * Environment.Visuals.BoxSettings.Increase
+local HeadOffset = WorldToViewportPoint(Player.Character.Head.Position + Vector3new(0, 0.5, 0))
+local LegsOffset = WorldToViewportPoint(Player.Character.HumanoidRootPart.Position - Vector3new(0, 3, 0))
+local TopLeftPosition = WorldToViewportPoint(HRPCFrame * CFramenew(HRPSize.X, HRPSize.Y, 0).Position)
+local TopRightPosition = WorldToViewportPoint(HRPCFrame * CFramenew(-HRPSize.X, HRPSize.Y, 0).Position)
+local BottomLeftPosition = WorldToViewportPoint(HRPCFrame * CFramenew(HRPSize.X, -HRPSize.Y - 0.5, 0).Position)
+local BottomRightPosition = WorldToViewportPoint(HRPCFrame * CFramenew(-HRPSize.X, -HRPSize.Y - 0.5, 0).Position)
+if PlayerTable.Box.Square.Visible and not PlayerTable.Box.TopLeftLine.Visible and not PlayerTable.Box.TopRightLine.Visible and not PlayerTable.Box.BottomLeftLine.Visible and not PlayerTable.Box.BottomRightLine.Visible then
+PlayerTable.Box.Square.Thickness = Environment.Visuals.BoxSettings.Thickness
+PlayerTable.Box.Square.Color = Environment.Visuals.BoxSettings.Color
+PlayerTable.Box.Square.Transparency = Environment.Visuals.BoxSettings.Transparency
+PlayerTable.Box.Square.Filled = Environment.Visuals.BoxSettings.Filled
+PlayerTable.Box.Square.Size = Vector2new(2000 / Vector.Z, HeadOffset.Y - LegsOffset.Y)
+PlayerTable.Box.Square.Position = Vector2new(Vector.X - PlayerTable.Box.Square.Size.X / 2, Vector.Y - PlayerTable.Box.Square.Size.Y / 2)
+elseif not PlayerTable.Box.Square.Visible and PlayerTable.Box.TopLeftLine.Visible and PlayerTable.Box.TopRightLine.Visible and PlayerTable.Box.BottomLeftLine.Visible and PlayerTable.Box.BottomRightLine.Visible then
+PlayerTable.Box.TopLeftLine.Thickness = Environment.Visuals.BoxSettings.Thickness
+PlayerTable.Box.TopLeftLine.Transparency = Environment.Visuals.BoxSettings.Transparency
+PlayerTable.Box.TopLeftLine.Color = Environment.Visuals.BoxSettings.Color
+PlayerTable.Box.TopRightLine.Thickness = Environment.Visuals.BoxSettings.Thickness
+PlayerTable.Box.TopRightLine.Transparency = Environment.Visuals.BoxSettings.Transparency
+PlayerTable.Box.TopRightLine.Color = Environment.Visuals.BoxSettings.Color
+PlayerTable.Box.BottomLeftLine.Thickness = Environment.Visuals.BoxSettings.Thickness
+PlayerTable.Box.BottomLeftLine.Transparency = Environment.Visuals.BoxSettings.Transparency
+PlayerTable.Box.BottomLeftLine.Color = Environment.Visuals.BoxSettings.Color
+PlayerTable.Box.BottomRightLine.Thickness = Environment.Visuals.BoxSettings.Thickness
+PlayerTable.Box.BottomRightLine.Transparency = Environment.Visuals.BoxSettings.Transparency
+PlayerTable.Box.BottomRightLine.Color = Environment.Visuals.BoxSettings.Color
+PlayerTable.Box.TopLeftLine.From = Vector2new(TopLeftPosition.X, TopLeftPosition.Y)
+PlayerTable.Box.TopLeftLine.To = Vector2new(TopRightPosition.X, TopRightPosition.Y)
+PlayerTable.Box.TopRightLine.From = Vector2new(TopRightPosition.X, TopRightPosition.Y)
+PlayerTable.Box.TopRightLine.To = Vector2new(BottomRightPosition.X, BottomRightPosition.Y)
+PlayerTable.Box.BottomLeftLine.From = Vector2new(BottomLeftPosition.X, BottomLeftPosition.Y)
+PlayerTable.Box.BottomLeftLine.To = Vector2new(TopLeftPosition.X, TopLeftPosition.Y)
+PlayerTable.Box.BottomRightLine.From = Vector2new(BottomRightPosition.X, BottomRightPosition.Y)
+PlayerTable.Box.BottomRightLine.To = Vector2new(BottomLeftPosition.X, BottomLeftPosition.Y)
+end
+else
+Visibility2(false)
+end
+else
+Visibility2(false)
 end
 end)
 end,
 
-AddHeadDot=function(Player)
-localPlayerTable=GetPlayerTable(Player)
-PlayerTable.HeadDot=Drawingnew("Circle")
-PlayerTable.Connection.HeadDot=Runervice.Rendertepped:Connect(function()
-ifPlayer.CharacterandPlayer.Character:FindFirtChildOfCla("Humanoid")andPlayer.Character:FindFirtChild("Head")andEnvironment.etting.Enabledthen
-localVector,Oncreen=WorldToViewportPoint(Player.Character.Head.Poition)
-PlayerTable.HeadDot.Viible=Environment.Viual.HeadDotetting.Enabled
-ifOncreenandEnvironment.Viual.HeadDotetting.Enabledthen
-ifEnvironment.Viual.HeadDotetting.Enabledthen
-PlayerTable.HeadDot.Viible=PlayerTable.Check.AliveandPlayerTable.Check.Teamandtrueorfale
-ifPlayerTable.HeadDot.Viiblethen
-PlayerTable.HeadDot.Thickne=Environment.Viual.HeadDotetting.Thickne
-PlayerTable.HeadDot.Color=Environment.Viual.HeadDotetting.Color
-PlayerTable.HeadDot.Tranparency=Environment.Viual.HeadDotetting.Tranparency
-PlayerTable.HeadDot.Numide=Environment.Viual.HeadDotetting.ide
-PlayerTable.HeadDot.Filled=Environment.Viual.HeadDotetting.Filled
-PlayerTable.HeadDot.Poition=Vector2new(Vector.X,Vector.Y)
-localTop,Bottom=WorldToViewportPoint((Player.Character.Head.CFrame*CFramenew(0,Player.Character.Head.ize.Y/2,0)).Poition),WorldToViewportPoint((Player.Character.Head.CFrame*CFramenew(0,-Player.Character.Head.ize.Y/2,0)).Poition)
-PlayerTable.HeadDot.Radiu=mathab((Top-Bottom).Y)-3
+AddHeadDot = function(Player)
+local PlayerTable = GetPlayerTable(Player)
+PlayerTable.HeadDot = Drawingnew("Circle")
+PlayerTable.Connections.HeadDot = RunService.RenderStepped:Connect(function()
+if Player.Character and Player.Character:FindFirstChildOfClass("Humanoid") and Player.Character:FindFirstChild("Head") and Environment.Settings.Enabled then
+local Vector, OnScreen = WorldToViewportPoint(Player.Character.Head.Position)
+PlayerTable.HeadDot.Visible = Environment.Visuals.HeadDotSettings.Enabled
+if OnScreen and Environment.Visuals.HeadDotSettings.Enabled then
+if Environment.Visuals.HeadDotSettings.Enabled then
+PlayerTable.HeadDot.Visible = PlayerTable.Checks.Alive and PlayerTable.Checks.Team and true or false
+if PlayerTable.HeadDot.Visible then
+PlayerTable.HeadDot.Thickness = Environment.Visuals.HeadDotSettings.Thickness
+PlayerTable.HeadDot.Color = Environment.Visuals.HeadDotSettings.Color
+PlayerTable.HeadDot.Transparency = Environment.Visuals.HeadDotSettings.Transparency
+PlayerTable.HeadDot.NumSides = Environment.Visuals.HeadDotSettings.Sides
+PlayerTable.HeadDot.Filled = Environment.Visuals.HeadDotSettings.Filled
+PlayerTable.HeadDot.Position = Vector2new(Vector.X, Vector.Y)
+local Top, Bottom = WorldToViewportPoint((Player.Character.Head.CFrame * CFramenew(0, Player.Character.Head.Size.Y / 2, 0)).Position), WorldToViewportPoint((Player.Character.Head.CFrame * CFramenew(0, -Player.Character.Head.Size.Y / 2, 0)).Position)
+PlayerTable.HeadDot.Radius = mathabs((Top - Bottom).Y) - 3
 end
 end
-ele
-PlayerTable.HeadDot.Viible=fale
+else
+PlayerTable.HeadDot.Visible = false
 end
-ele
-PlayerTable.HeadDot.Viible=fale
+else
+PlayerTable.HeadDot.Visible = false
 end
 end)
 end,
 
-AddHealthBar=function(Player)
-localPlayerTable=GetPlayerTable(Player)
-PlayerTable.HealthBar.Main=Drawingnew("quare")
-PlayerTable.HealthBar.Outline=Drawingnew("quare")
-PlayerTable.Connection.HealthBar=Runervice.Rendertepped:Connect(function()
-ifPlayer.CharacterandPlayer.Character:FindFirtChildOfCla("Humanoid")andPlayer.Character:FindFirtChild("HumanoidRootPart")andEnvironment.etting.Enabledthen
-localVector,Oncreen=WorldToViewportPoint(Player.Character.HumanoidRootPart.Poition)
-localLeftPoition=WorldToViewportPoint(Player.Character.HumanoidRootPart.CFrame*CFramenew(Player.Character.HumanoidRootPart.ize.X,Player.Character.HumanoidRootPart.ize.Y/2,0).Poition)
-localRightPoition=WorldToViewportPoint(Player.Character.HumanoidRootPart.CFrame*CFramenew(-Player.Character.HumanoidRootPart.ize.X,Player.Character.HumanoidRootPart.ize.Y/2,0).Poition)
-PlayerTable.HealthBar.Main.Viible=Environment.Viual.HealthBaretting.Enabled
-PlayerTable.HealthBar.Outline.Viible=Environment.Viual.HealthBaretting.Enabled
-ifOncreenandEnvironment.Viual.HealthBaretting.Enabledthen
-ifEnvironment.Viual.HealthBaretting.Enabledthen
-localHumanoid=Player.Character:FindFirtChildOfCla("Humanoid")
-PlayerTable.HealthBar.Main.Viible=PlayerTable.Check.AliveandPlayerTable.Check.Teamandtrueorfale
-PlayerTable.HealthBar.Outline.Viible=PlayerTable.HealthBar.Main.Viible
-ifPlayerTable.HealthBar.Main.Viiblethen
-PlayerTable.HealthBar.Main.Thickne=1
-PlayerTable.HealthBar.Main.Color=Color3fromRGB(255-mathfloor(Humanoid.Health/100*255),mathfloor(Humanoid.Health/100*255),Environment.Viual.HealthBaretting.Blue)
-PlayerTable.HealthBar.Main.Tranparency=Environment.Viual.HealthBaretting.Tranparency
-PlayerTable.HealthBar.Main.Filled=true
-PlayerTable.HealthBar.Main.ZIndex=2
-PlayerTable.HealthBar.Outline.Thickne=3
-PlayerTable.HealthBar.Outline.Color=Environment.Viual.HealthBaretting.OutlineColor
-PlayerTable.HealthBar.Outline.Tranparency=Environment.Viual.HealthBaretting.Tranparency
-PlayerTable.HealthBar.Outline.Filled=fale
-PlayerTable.HealthBar.Main.ZIndex=1
-ifEnvironment.Viual.HealthBaretting.Type==1then
-PlayerTable.HealthBar.Outline.ize=Vector2new(2000/Vector.Z,Environment.Viual.HealthBaretting.ize)
-PlayerTable.HealthBar.Main.ize=Vector2new(PlayerTable.HealthBar.Outline.ize.X*(Humanoid.Health/100),PlayerTable.HealthBar.Outline.ize.Y)
-PlayerTable.HealthBar.Main.Poition=Vector2new(Vector.X-PlayerTable.HealthBar.Outline.ize.X/2,Vector.Y-PlayerTable.HealthBar.Outline.ize.X/2-Environment.Viual.HealthBaretting.Offet)
-eleifEnvironment.Viual.HealthBaretting.Type==2then
-PlayerTable.HealthBar.Outline.ize=Vector2new(2000/Vector.Z,Environment.Viual.HealthBaretting.ize)
-PlayerTable.HealthBar.Main.ize=Vector2new(PlayerTable.HealthBar.Outline.ize.X*(Humanoid.Health/100),PlayerTable.HealthBar.Outline.ize.Y)
-PlayerTable.HealthBar.Main.Poition=Vector2new(Vector.X-PlayerTable.HealthBar.Outline.ize.X/2,Vector.Y+PlayerTable.HealthBar.Outline.ize.X/2+Environment.Viual.HealthBaretting.Offet)
-eleifEnvironment.Viual.HealthBaretting.Type==3then
-PlayerTable.HealthBar.Outline.ize=Vector2new(Environment.Viual.HealthBaretting.ize,2500/Vector.Z)
-PlayerTable.HealthBar.Main.ize=Vector2new(PlayerTable.HealthBar.Outline.ize.X,PlayerTable.HealthBar.Outline.ize.Y*(Humanoid.Health/100))
-PlayerTable.HealthBar.Main.Poition=Vector2new(LeftPoition.X-Environment.Viual.HealthBaretting.Offet,Vector.Y-PlayerTable.HealthBar.Outline.ize.Y/2)
-eleifEnvironment.Viual.HealthBaretting.Type==4then
-PlayerTable.HealthBar.Outline.ize=Vector2new(Environment.Viual.HealthBaretting.ize,2500/Vector.Z)
-PlayerTable.HealthBar.Main.ize=Vector2new(PlayerTable.HealthBar.Outline.ize.X,PlayerTable.HealthBar.Outline.ize.Y*(Humanoid.Health/100))
-PlayerTable.HealthBar.Main.Poition=Vector2new(RightPoition.X+Environment.Viual.HealthBaretting.Offet,Vector.Y-PlayerTable.HealthBar.Outline.ize.Y/2)
+AddHealthBar = function(Player)
+local PlayerTable = GetPlayerTable(Player)
+PlayerTable.HealthBar.Main = Drawingnew("Square")
+PlayerTable.HealthBar.Outline = Drawingnew("Square")
+PlayerTable.Connections.HealthBar = RunService.RenderStepped:Connect(function()
+if Player.Character and Player.Character:FindFirstChildOfClass("Humanoid") and Player.Character:FindFirstChild("HumanoidRootPart") and Environment.Settings.Enabled then
+local Vector, OnScreen = WorldToViewportPoint(Player.Character.HumanoidRootPart.Position)
+local LeftPosition = WorldToViewportPoint(Player.Character.HumanoidRootPart.CFrame * CFramenew(Player.Character.HumanoidRootPart.Size.X, Player.Character.HumanoidRootPart.Size.Y / 2, 0).Position)
+local RightPosition = WorldToViewportPoint(Player.Character.HumanoidRootPart.CFrame * CFramenew(-Player.Character.HumanoidRootPart.Size.X, Player.Character.HumanoidRootPart.Size.Y / 2, 0).Position)
+PlayerTable.HealthBar.Main.Visible = Environment.Visuals.HealthBarSettings.Enabled
+PlayerTable.HealthBar.Outline.Visible = Environment.Visuals.HealthBarSettings.Enabled
+if OnScreen and Environment.Visuals.HealthBarSettings.Enabled then
+if Environment.Visuals.HealthBarSettings.Enabled then
+local Humanoid = Player.Character:FindFirstChildOfClass("Humanoid")
+PlayerTable.HealthBar.Main.Visible = PlayerTable.Checks.Alive and PlayerTable.Checks.Team and true or false
+PlayerTable.HealthBar.Outline.Visible = PlayerTable.HealthBar.Main.Visible
+if PlayerTable.HealthBar.Main.Visible then
+PlayerTable.HealthBar.Main.Thickness = 1
+PlayerTable.HealthBar.Main.Color = Color3fromRGB(255 - mathfloor(Humanoid.Health / 100 * 255), mathfloor(Humanoid.Health / 100 * 255), Environment.Visuals.HealthBarSettings.Blue)
+PlayerTable.HealthBar.Main.Transparency = Environment.Visuals.HealthBarSettings.Transparency
+PlayerTable.HealthBar.Main.Filled = true
+PlayerTable.HealthBar.Main.ZIndex = 2
+PlayerTable.HealthBar.Outline.Thickness = 3
+PlayerTable.HealthBar.Outline.Color = Environment.Visuals.HealthBarSettings.OutlineColor
+PlayerTable.HealthBar.Outline.Transparency = Environment.Visuals.HealthBarSettings.Transparency
+PlayerTable.HealthBar.Outline.Filled = false
+PlayerTable.HealthBar.Main.ZIndex = 1
+if Environment.Visuals.HealthBarSettings.Type == 1 then
+PlayerTable.HealthBar.Outline.Size = Vector2new(2000 / Vector.Z, Environment.Visuals.HealthBarSettings.Size)
+PlayerTable.HealthBar.Main.Size = Vector2new(PlayerTable.HealthBar.Outline.Size.X * (Humanoid.Health / 100), PlayerTable.HealthBar.Outline.Size.Y)
+PlayerTable.HealthBar.Main.Position = Vector2new(Vector.X - PlayerTable.HealthBar.Outline.Size.X / 2, Vector.Y - PlayerTable.HealthBar.Outline.Size.X / 2 - Environment.Visuals.HealthBarSettings.Offset)
+elseif Environment.Visuals.HealthBarSettings.Type == 2 then
+PlayerTable.HealthBar.Outline.Size = Vector2new(2000 / Vector.Z, Environment.Visuals.HealthBarSettings.Size)
+PlayerTable.HealthBar.Main.Size = Vector2new(PlayerTable.HealthBar.Outline.Size.X * (Humanoid.Health / 100), PlayerTable.HealthBar.Outline.Size.Y)
+PlayerTable.HealthBar.Main.Position = Vector2new(Vector.X - PlayerTable.HealthBar.Outline.Size.X / 2, Vector.Y + PlayerTable.HealthBar.Outline.Size.X / 2 + Environment.Visuals.HealthBarSettings.Offset)
+elseif Environment.Visuals.HealthBarSettings.Type == 3 then
+PlayerTable.HealthBar.Outline.Size = Vector2new(Environment.Visuals.HealthBarSettings.Size, 2500 / Vector.Z)
+PlayerTable.HealthBar.Main.Size = Vector2new(PlayerTable.HealthBar.Outline.Size.X, PlayerTable.HealthBar.Outline.Size.Y * (Humanoid.Health / 100))
+PlayerTable.HealthBar.Main.Position = Vector2new(LeftPosition.X - Environment.Visuals.HealthBarSettings.Offset, Vector.Y - PlayerTable.HealthBar.Outline.Size.Y / 2)
+elseif Environment.Visuals.HealthBarSettings.Type == 4 then
+PlayerTable.HealthBar.Outline.Size = Vector2new(Environment.Visuals.HealthBarSettings.Size, 2500 / Vector.Z)
+PlayerTable.HealthBar.Main.Size = Vector2new(PlayerTable.HealthBar.Outline.Size.X, PlayerTable.HealthBar.Outline.Size.Y * (Humanoid.Health / 100))
+PlayerTable.HealthBar.Main.Position = Vector2new(RightPosition.X + Environment.Visuals.HealthBarSettings.Offset, Vector.Y - PlayerTable.HealthBar.Outline.Size.Y / 2)
 end
-PlayerTable.HealthBar.Outline.Poition=PlayerTable.HealthBar.Main.Poition
+PlayerTable.HealthBar.Outline.Position = PlayerTable.HealthBar.Main.Position
 end
 end
-ele
-PlayerTable.HealthBar.Main.Viible=fale
-PlayerTable.HealthBar.Outline.Viible=fale
+else
+PlayerTable.HealthBar.Main.Visible = false
+PlayerTable.HealthBar.Outline.Visible = false
 end
-ele
-PlayerTable.HealthBar.Main.Viible=fale
-PlayerTable.HealthBar.Outline.Viible=fale
+else
+PlayerTable.HealthBar.Main.Visible = false
+PlayerTable.HealthBar.Outline.Visible = false
 end
 end)
 end,
-AddCrohair=function()
-localAxiX,AxiY=Camera.Viewportize.X/2,Camera.Viewportize.Y/2
-erviceConnection.AxiConnection=Runervice.Rendertepped:Connect(function()
-ifEnvironment.Crohair.etting.Enabledthen
-ifEnvironment.Crohair.etting.Type==1then
-AxiX,AxiY=UerInputervice:GetMoueLocation().X,UerInputervice:GetMoueLocation().Y
-eleifEnvironment.Crohair.etting.Type==2then
-AxiX,AxiY=Camera.Viewportize.X/2,Camera.Viewportize.Y/2
-ele
-Environment.Crohair.etting.Type=1
+AddCrosshair = function()
+local AxisX, AxisY = Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2
+ServiceConnections.AxisConnection = RunService.RenderStepped:Connect(function()
+if Environment.Crosshair.Settings.Enabled then
+if Environment.Crosshair.Settings.Type == 1 then
+AxisX, AxisY = UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y
+elseif Environment.Crosshair.Settings.Type == 2 then
+AxisX, AxisY = Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2
+else
+Environment.Crosshair.Settings.Type = 1
 end
 end
 end)
-erviceConnection.CrohairConnection=Runervice.Rendertepped:Connect(function()
-ifEnvironment.Crohair.etting.Enabledthen
-Environment.Crohair.Part.LeftLine.Viible=Environment.Crohair.etting.Enabled
-Environment.Crohair.Part.LeftLine.Color=Environment.Crohair.etting.Color
-Environment.Crohair.Part.LeftLine.Thickne=Environment.Crohair.etting.Thickne
-Environment.Crohair.Part.LeftLine.Tranparency=Environment.Crohair.etting.Tranparency
-Environment.Crohair.Part.LeftLine.From=Vector2new(AxiX-(mathco(mathrad(Environment.Crohair.etting.Rotation))*Environment.Crohair.etting.Gapize),AxiY-(mathin(mathrad(Environment.Crohair.etting.Rotation))*Environment.Crohair.etting.Gapize))
-Environment.Crohair.Part.LeftLine.To=Vector2new(AxiX-(mathco(mathrad(Environment.Crohair.etting.Rotation))*(Environment.Crohair.etting.ize+Environment.Crohair.etting.Gapize)),AxiY-(mathin(mathrad(Environment.Crohair.etting.Rotation))*(Environment.Crohair.etting.ize+Environment.Crohair.etting.Gapize)))
-Environment.Crohair.Part.RightLine.Viible=Environment.Crohair.etting.Enabled
-Environment.Crohair.Part.RightLine.Color=Environment.Crohair.etting.Color
-Environment.Crohair.Part.RightLine.Thickne=Environment.Crohair.etting.Thickne
-Environment.Crohair.Part.RightLine.Tranparency=Environment.Crohair.etting.Tranparency
-Environment.Crohair.Part.RightLine.From=Vector2new(AxiX+(mathco(mathrad(Environment.Crohair.etting.Rotation))*Environment.Crohair.etting.Gapize),AxiY+(mathin(mathrad(Environment.Crohair.etting.Rotation))*Environment.Crohair.etting.Gapize))
-Environment.Crohair.Part.RightLine.To=Vector2new(AxiX+(mathco(mathrad(Environment.Crohair.etting.Rotation))*(Environment.Crohair.etting.ize+Environment.Crohair.etting.Gapize)),AxiY+(mathin(mathrad(Environment.Crohair.etting.Rotation))*(Environment.Crohair.etting.ize+Environment.Crohair.etting.Gapize)))
-Environment.Crohair.Part.TopLine.Viible=Environment.Crohair.etting.Enabled
-Environment.Crohair.Part.TopLine.Color=Environment.Crohair.etting.Color
-Environment.Crohair.Part.TopLine.Thickne=Environment.Crohair.etting.Thickne
-Environment.Crohair.Part.TopLine.Tranparency=Environment.Crohair.etting.Tranparency
-Environment.Crohair.Part.TopLine.From=Vector2new(AxiX-(mathin(mathrad(-Environment.Crohair.etting.Rotation))*Environment.Crohair.etting.Gapize),AxiY-(mathco(mathrad(-Environment.Crohair.etting.Rotation))*Environment.Crohair.etting.Gapize))
-Environment.Crohair.Part.TopLine.To=Vector2new(AxiX-(mathin(mathrad(-Environment.Crohair.etting.Rotation))*(Environment.Crohair.etting.ize+Environment.Crohair.etting.Gapize)),AxiY-(mathco(mathrad(-Environment.Crohair.etting.Rotation))*(Environment.Crohair.etting.ize+Environment.Crohair.etting.Gapize)))
-Environment.Crohair.Part.BottomLine.Viible=Environment.Crohair.etting.Enabled
-Environment.Crohair.Part.BottomLine.Color=Environment.Crohair.etting.Color
-Environment.Crohair.Part.BottomLine.Thickne=Environment.Crohair.etting.Thickne
-Environment.Crohair.Part.BottomLine.Tranparency=Environment.Crohair.etting.Tranparency
-Environment.Crohair.Part.BottomLine.From=Vector2new(AxiX+(mathin(mathrad(-Environment.Crohair.etting.Rotation))*Environment.Crohair.etting.Gapize),AxiY+(mathco(mathrad(-Environment.Crohair.etting.Rotation))*Environment.Crohair.etting.Gapize))
-Environment.Crohair.Part.BottomLine.To=Vector2new(AxiX+(mathin(mathrad(-Environment.Crohair.etting.Rotation))*(Environment.Crohair.etting.ize+Environment.Crohair.etting.Gapize)),AxiY+(mathco(mathrad(-Environment.Crohair.etting.Rotation))*(Environment.Crohair.etting.ize+Environment.Crohair.etting.Gapize)))
-Environment.Crohair.Part.CenterDot.Viible=Environment.Crohair.etting.EnabledandEnvironment.Crohair.etting.CenterDot
-Environment.Crohair.Part.CenterDot.Color=Environment.Crohair.etting.CenterDotColor
-Environment.Crohair.Part.CenterDot.Radiu=Environment.Crohair.etting.CenterDotize
-Environment.Crohair.Part.CenterDot.Tranparency=Environment.Crohair.etting.CenterDotTranparency
-Environment.Crohair.Part.CenterDot.Filled=Environment.Crohair.etting.CenterDotFilled
-Environment.Crohair.Part.CenterDot.Thickne=Environment.Crohair.etting.CenterDotThickne
-Environment.Crohair.Part.CenterDot.Poition=Vector2new(AxiX,AxiY)
-ele
-Environment.Crohair.Part.LeftLine.Viible=fale
-Environment.Crohair.Part.RightLine.Viible=fale
-Environment.Crohair.Part.TopLine.Viible=fale
-Environment.Crohair.Part.BottomLine.Viible=fale
-Environment.Crohair.Part.CenterDot.Viible=fale
+ServiceConnections.CrosshairConnection = RunService.RenderStepped:Connect(function()
+if Environment.Crosshair.Settings.Enabled then
+Environment.Crosshair.Parts.LeftLine.Visible = Environment.Crosshair.Settings.Enabled
+Environment.Crosshair.Parts.LeftLine.Color = Environment.Crosshair.Settings.Color
+Environment.Crosshair.Parts.LeftLine.Thickness = Environment.Crosshair.Settings.Thickness
+Environment.Crosshair.Parts.LeftLine.Transparency = Environment.Crosshair.Settings.Transparency
+Environment.Crosshair.Parts.LeftLine.From = Vector2new(AxisX - (mathcos(mathrad(Environment.Crosshair.Settings.Rotation)) * Environment.Crosshair.Settings.GapSize), AxisY - (mathsin(mathrad(Environment.Crosshair.Settings.Rotation)) * Environment.Crosshair.Settings.GapSize))
+Environment.Crosshair.Parts.LeftLine.To = Vector2new(AxisX - (mathcos(mathrad(Environment.Crosshair.Settings.Rotation)) * (Environment.Crosshair.Settings.Size + Environment.Crosshair.Settings.GapSize)), AxisY - (mathsin(mathrad(Environment.Crosshair.Settings.Rotation)) * (Environment.Crosshair.Settings.Size + Environment.Crosshair.Settings.GapSize)))
+Environment.Crosshair.Parts.RightLine.Visible = Environment.Crosshair.Settings.Enabled
+Environment.Crosshair.Parts.RightLine.Color = Environment.Crosshair.Settings.Color
+Environment.Crosshair.Parts.RightLine.Thickness = Environment.Crosshair.Settings.Thickness
+Environment.Crosshair.Parts.RightLine.Transparency = Environment.Crosshair.Settings.Transparency
+Environment.Crosshair.Parts.RightLine.From = Vector2new(AxisX + (mathcos(mathrad(Environment.Crosshair.Settings.Rotation)) * Environment.Crosshair.Settings.GapSize), AxisY + (mathsin(mathrad(Environment.Crosshair.Settings.Rotation)) * Environment.Crosshair.Settings.GapSize))
+Environment.Crosshair.Parts.RightLine.To = Vector2new(AxisX + (mathcos(mathrad(Environment.Crosshair.Settings.Rotation)) * (Environment.Crosshair.Settings.Size + Environment.Crosshair.Settings.GapSize)), AxisY + (mathsin(mathrad(Environment.Crosshair.Settings.Rotation)) * (Environment.Crosshair.Settings.Size + Environment.Crosshair.Settings.GapSize)))
+Environment.Crosshair.Parts.TopLine.Visible = Environment.Crosshair.Settings.Enabled
+Environment.Crosshair.Parts.TopLine.Color = Environment.Crosshair.Settings.Color
+Environment.Crosshair.Parts.TopLine.Thickness = Environment.Crosshair.Settings.Thickness
+Environment.Crosshair.Parts.TopLine.Transparency = Environment.Crosshair.Settings.Transparency
+Environment.Crosshair.Parts.TopLine.From = Vector2new(AxisX - (mathsin(mathrad(-Environment.Crosshair.Settings.Rotation)) * Environment.Crosshair.Settings.GapSize), AxisY - (mathcos(mathrad(-Environment.Crosshair.Settings.Rotation)) * Environment.Crosshair.Settings.GapSize))
+Environment.Crosshair.Parts.TopLine.To = Vector2new(AxisX - (mathsin(mathrad(-Environment.Crosshair.Settings.Rotation)) * (Environment.Crosshair.Settings.Size + Environment.Crosshair.Settings.GapSize)), AxisY - (mathcos(mathrad(-Environment.Crosshair.Settings.Rotation)) * (Environment.Crosshair.Settings.Size + Environment.Crosshair.Settings.GapSize)))
+Environment.Crosshair.Parts.BottomLine.Visible = Environment.Crosshair.Settings.Enabled
+Environment.Crosshair.Parts.BottomLine.Color = Environment.Crosshair.Settings.Color
+Environment.Crosshair.Parts.BottomLine.Thickness = Environment.Crosshair.Settings.Thickness
+Environment.Crosshair.Parts.BottomLine.Transparency = Environment.Crosshair.Settings.Transparency
+Environment.Crosshair.Parts.BottomLine.From = Vector2new(AxisX + (mathsin(mathrad(-Environment.Crosshair.Settings.Rotation)) * Environment.Crosshair.Settings.GapSize), AxisY + (mathcos(mathrad(-Environment.Crosshair.Settings.Rotation)) * Environment.Crosshair.Settings.GapSize))
+Environment.Crosshair.Parts.BottomLine.To = Vector2new(AxisX + (mathsin(mathrad(-Environment.Crosshair.Settings.Rotation)) * (Environment.Crosshair.Settings.Size + Environment.Crosshair.Settings.GapSize)), AxisY + (mathcos(mathrad(-Environment.Crosshair.Settings.Rotation)) * (Environment.Crosshair.Settings.Size + Environment.Crosshair.Settings.GapSize)))
+Environment.Crosshair.Parts.CenterDot.Visible = Environment.Crosshair.Settings.Enabled and Environment.Crosshair.Settings.CenterDot
+Environment.Crosshair.Parts.CenterDot.Color = Environment.Crosshair.Settings.CenterDotColor
+Environment.Crosshair.Parts.CenterDot.Radius = Environment.Crosshair.Settings.CenterDotSize
+Environment.Crosshair.Parts.CenterDot.Transparency = Environment.Crosshair.Settings.CenterDotTransparency
+Environment.Crosshair.Parts.CenterDot.Filled = Environment.Crosshair.Settings.CenterDotFilled
+Environment.Crosshair.Parts.CenterDot.Thickness = Environment.Crosshair.Settings.CenterDotThickness
+Environment.Crosshair.Parts.CenterDot.Position = Vector2new(AxisX, AxisY)
+else
+Environment.Crosshair.Parts.LeftLine.Visible = false
+Environment.Crosshair.Parts.RightLine.Visible = false
+Environment.Crosshair.Parts.TopLine.Visible = false
+Environment.Crosshair.Parts.BottomLine.Visible = false
+Environment.Crosshair.Parts.CenterDot.Visible = false
 end
 end)
 end
 }
-localfunctionWrap(Player)
-ifnotGetPlayerTable(Player)then
-localTable,Value=nil,{Name=Player.Name,Check={Alive=true,Team=true},Connection={},EP=nil,Tracer=nil,HeadDot=nil,HealthBar={Main=nil,Outline=nil},Box={quare=nil,TopLeftLine=nil,TopRightLine=nil,BottomLeftLine=nil,BottomRightLine=nil},Cham={}}
-for_,vinnext,Environment.WrappedPlayerdo
-ifv[1]==Player.Namethen
-Table=v
+local function Wrap(Player)
+if not GetPlayerTable(Player) then
+local Table, Value = nil, {Name = Player.Name, Checks = {Alive = true, Team = true}, Connections = {}, ESP = nil, Tracer = nil, HeadDot = nil, HealthBar = {Main = nil, Outline = nil}, Box = {Square = nil, TopLeftLine = nil, TopRightLine = nil, BottomLeftLine = nil, BottomRightLine = nil}, Chams = {}}
+for _, v in next, Environment.WrappedPlayers do
+if v[1] == Player.Name then
+Table = v
 end
 end
-ifnotTablethen
-Environment.WrappedPlayer[#Environment.WrappedPlayer+1]=Value
-AignRigType(Player)
-InitCheck(Player)
-Viual.AddCham(Player)
-Viual.AddEP(Player)
-Viual.AddTracer(Player)
-Viual.AddBox(Player)
-Viual.AddHeadDot(Player)
-Viual.AddHealthBar(Player)
+if not Table then
+Environment.WrappedPlayers[#Environment.WrappedPlayers + 1] = Value
+AssignRigType(Player)
+InitChecks(Player)
+Visuals.AddChams(Player)
+Visuals.AddESP(Player)
+Visuals.AddTracer(Player)
+Visuals.AddBox(Player)
+Visuals.AddHeadDot(Player)
+Visuals.AddHealthBar(Player)
 end
 end
 end
-localfunctionUnWrap(Player)
-localTable,Index=nil,nil
-fori,vinnext,Environment.WrappedPlayerdo
-ifv.Name==Player.Namethen
-Table,Index=v,i
+local function UnWrap(Player)
+local Table, Index = nil, nil
+for i, v in next, Environment.WrappedPlayers do
+if v.Name == Player.Name then
+Table, Index = v, i
 end
 end
-ifTablethen
-for_,vinnext,Table.Connectiondo
-v:Diconnect()
+if Table then
+for _, v in next, Table.Connections do
+v:Disconnect()
 end
 pcall(function()
-Table.EP:Remove()
+Table.ESP:Remove()
 Table.Tracer:Remove()
 Table.HeadDot:Remove()
 Table.HealthBar.Main:Remove()
 Table.HealthBar.Outline:Remove()
 end)
-for_,vinnext,Table.Boxdo
-ifnotv.Removethen
+for _, v in next, Table.Box do
+if not v.Remove then
 continue
-ele
+else
 v:Remove()
 end
 end
-for_,vinnext,Table.Chamdo
-for_,v2innext,vdo
-ifnotv2.Removethen
+for _, v in next, Table.Chams do
+for _, v2 in next, v do
+if not v2.Remove then
 continue
-ele
+else
 v2:Remove()
 end
 end
 end
-Environment.WrappedPlayer[Index]=nil
+Environment.WrappedPlayers[Index] = nil
 end
 end
-localfunctionLoad()
-Viual.AddCrohair()
-erviceConnection.PlayerAddedConnection=Player.PlayerAdded:Connect(Wrap)
-erviceConnection.PlayerRemovingConnection=Player.PlayerRemoving:Connect(UnWrap)
-erviceConnection.ReWrapPlayer=Runervice.Rendertepped:Connect(function()
-for_,vinnext,Player:GetPlayer()do
-ifv~=LocalPlayerthen
+local function Load()
+Visuals.AddCrosshair()
+ServiceConnections.PlayerAddedConnection = Players.PlayerAdded:Connect(Wrap)
+ServiceConnections.PlayerRemovingConnection = Players.PlayerRemoving:Connect(UnWrap)
+ServiceConnections.ReWrapPlayers = RunService.RenderStepped:Connect(function()
+for _, v in next, Players:GetPlayers() do
+if v ~= LocalPlayer then
 Wrap(v)
 end
 end
 wait(30)
 end)
 end
-Environment.Function={}
-functionEnvironment.Function:Exit()
-for_,vinnext,erviceConnectiondo
-v:Diconnect()
+Environment.Functions = {}
+function Environment.Functions:Exit()
+for _, v in next, ServiceConnections do
+v:Disconnect()
 end
-for_,vinnext,Environment.Crohair.Partdo
+for _, v in next, Environment.Crosshair.Parts do
 v:Remove()
 end
-for_,vinnext,Player:GetPlayer()do
-ifv~=LocalPlayerthen
+for _, v in next, Players:GetPlayers() do
+if v ~= LocalPlayer then
 UnWrap(v)
 end
 end
-getgenv().natxyzEP.WallHack.Function=nil
-getgenv().natxyzEP.WallHack=nil
-Load=nil;GetPlayerTable=nil;AignRigType=nil;InitCheck=nil;UpdateCham=nil;Viual=nil;Wrap=nil;UnWrap=nil
+getgenv().natxyzESP.WallHack.Functions = nil
+getgenv().natxyzESP.WallHack = nil
+Load = nil; GetPlayerTable = nil; AssignRigType = nil; InitChecks = nil; UpdateCham = nil; Visuals = nil; Wrap = nil; UnWrap = nil
 end
-functionEnvironment.Function:Retart()
-for_,vinnext,Player:GetPlayer()do
-ifv~=LocalPlayerthen
+function Environment.Functions:Restart()
+for _, v in next, Players:GetPlayers() do
+if v ~= LocalPlayer then
 UnWrap(v)
 end
 end
-for_,vinnext,erviceConnectiondo
-v:Diconnect()
+for _, v in next, ServiceConnections do
+v:Disconnect()
 end
 Load()
 end
-etmetatable(Environment.Function,{
-__newindex=warn
+setmetatable(Environment.Functions, {
+__newindex = warn
 })
