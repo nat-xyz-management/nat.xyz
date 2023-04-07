@@ -66,7 +66,6 @@ local espLib = {
 		chamsOutlineTransparency = 0
 	},
  };
-espLibrary.__index = espLibrary;
 
 -- variables
 local getService = game.GetService;
