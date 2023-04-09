@@ -2,7 +2,7 @@
 local Players = game:GetService("Players")
 
 local ESP = {
-    Enabled = true,
+    Enabled = false,
     Settings = {
         RemoveOnDeath = false,
         MaxDistance = 0, 
