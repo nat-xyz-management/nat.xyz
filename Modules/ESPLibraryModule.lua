@@ -1,21 +1,21 @@
-
 local ESP = {
     Enabled = false,
-    Boxes = false,
+    Boxes = true,
     BoxShift = CFrame.new(0,-1.5,0),
 	BoxSize = Vector3.new(4,6,0),
-    Color = Color3.fromRGB(244, 95, 209),
+    Color = Color3.fromRGB(255, 170, 0),
     FaceCamera = false,
-    Names = false,
-    TeamColor = false,
+    Names = true,
+    TeamColor = true,
     Thickness = 2,
     AttachShift = 1,
-    TeamMates = false,
+    TeamMates = true,
     Players = true,
     
     Objects = setmetatable({}, {__mode="kv"}),
     Overrides = {}
 }
+
 local cam = workspace.CurrentCamera
 local plrs = game:GetService("Players")
 local plr = plrs.LocalPlayer
@@ -23,7 +23,6 @@ local mouse = plr:GetMouse()
 
 local V3new = Vector3.new
 local WorldToViewportPoint = cam.WorldToViewportPoint
-
 
 local function Draw(obj, props)
 	local new = Drawing.new(obj)
@@ -75,13 +74,12 @@ function ESP:Toggle(bool)
     self.Enabled = bool
     if not bool then
         for i,v in pairs(self.Objects) do
-            if v.Type == "Box" then 
+            if v.Type == "Box" then
                 if v.Temporary then
                     v:Remove()
                 else
                     for i,v in pairs(v.Components) do
-                        v.Visible = false
-                    end
+                        v.Visible
                 end
             end
         end
@@ -105,7 +103,6 @@ function ESP:AddObjectListener(parent, options)
                         IsEnabled = options.IsEnabled,
                         RenderInNil = options.RenderInNil
                     })
-                    
                     if options.OnAdded then
                         coroutine.wrap(options.OnAdded)(box)
                     end
@@ -141,7 +138,6 @@ end
 
 function boxBase:Update()
     if not self.PrimaryPart then
-        
         return self:Remove()
     end
 
@@ -180,7 +176,6 @@ function boxBase:Update()
         color = ESP.HighlightColor
     end
 
-    
     local cf = self.PrimaryPart.CFrame
     if ESP.FaceCamera then
         cf = CFrame.new(cf.p, cam.CFrame.p)
@@ -263,7 +258,7 @@ function ESP:Add(obj, options)
     local box = setmetatable({
         Name = options.Name or obj.Name,
         Type = "Box",
-        Color = options.Color 
+        Color = options.Color,
         Size = options.Size or self.BoxSize,
         Object = obj,
         Player = options.Player or plrs:GetPlayerFromCharacter(obj),
